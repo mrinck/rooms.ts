@@ -4,7 +4,7 @@ import { Client } from "./client";
 import { Observable, Subject } from "rxjs";
 import { first } from "rxjs/operators";
 import { injectable } from "inversify";
-import { Initializable } from "./api";
+import { Initializable, ServerConfig } from "./api";
 import { Logger } from "./logger";
 
 @injectable()
@@ -13,6 +13,7 @@ export class Server implements Initializable {
     clients: Client[];
     clientConnects: Observable<Client>;
 
+    private _config: ServerConfig;
     private http: Http.Server;
     private socket: WebSocket.Server;
     private clientConnectsSubject: Subject<Client>;
@@ -20,17 +21,19 @@ export class Server implements Initializable {
 
     constructor(
         private logger: Logger
-    ) {}
+    ) { }
 
     init(config: any): Observable<number> {
-        const port = config && config.server && config.server.port || 8080;
+        this._config = {
+            port: config.server && config.server.port || 8080
+        };
 
         this.clientConnectsSubject = new Subject();
         this.clientConnects = this.clientConnectsSubject.asObservable();
         this.initsSubject = new Subject();
         this.http = Http.createServer();
         this.http.listen();
-        this.socket = new WebSocket.Server({ server: this.http, port: port });
+        this.socket = new WebSocket.Server({ server: this.http, port: this._config.port });
         this.clients = [];
 
         this.socket.on("connection", connection => {
@@ -48,6 +51,10 @@ export class Server implements Initializable {
         });
 
         return this.initsSubject.asObservable();
+    }
+
+    get config() {
+        return this._config;
     }
 
     stop() {

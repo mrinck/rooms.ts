@@ -11,3 +11,11 @@ export interface ApplicationClass {
 export interface Initializable {
     init(config: any): Observable<any>;
 }
+
+export interface Config {
+    server: ServerConfig;
+}
+
+export interface ServerConfig {
+    port: number;
+}

@@ -1,8 +1,8 @@
-import { Application } from "../core/api";
 import { injectable } from "inversify";
+import { Application } from "../core/api";
 import { Server } from "../core/server";
-import { Player } from "./player";
 import { Client } from "../core/client";
+import { Player } from "./player";
 
 @injectable()
 export class App implements Application {
@@ -14,8 +14,9 @@ export class App implements Application {
     ) {}
 
     onInit() {
+        console.log("Server listening on port", this.server.config.port);
+
         this.server.clientConnects.subscribe(client => {
-            console.log("client connected");
             this.readName(client);
         });
     }

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Container } from "inversify";
+import { Container, interfaces } from "inversify";
 import { Initializable, ApplicationClass, Application } from "./api";
 import { Logger } from "./logger";
 import { Server } from "./server";
@@ -19,13 +19,14 @@ export async function run(appClass: ApplicationClass, config: any) {
     app.onInit();
 }
 
-function bind(component: any): any {
-    container.bind(component).toSelf().inSingletonScope();
-    return container.get(component);
+function bind<T>(service: interfaces.ServiceIdentifier<T>): any {
+    container.bind(service).toSelf().inSingletonScope();
+
+    return container.get(service);
 }
 
-function init(component: any, config: any): Promise<void> {
-    const instance = bind(component) as Initializable;
+function init<T>(service: interfaces.ServiceIdentifier<T>, config: any): Promise<void> {
+    const instance = bind(service) as Initializable;
     const observable = instance.init(config);
     
     return observable.pipe(first()).toPromise();
