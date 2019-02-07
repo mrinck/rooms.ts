@@ -1,0 +1,97 @@
+[
+    {
+        "id": "1",
+        "type": "Room",
+        "shortDesc": "Room 1",
+        "exits": [
+            {
+                "direction": "north",
+                "target": "6"
+            },
+            {
+                "direction": "south",
+                "target": "2"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "type": "Room",
+        "shortDesc": "Room 2",
+        "exits": [
+            {
+                "direction": "north",
+                "target": "1"
+            },
+            {
+
+                "direction": "south",
+                "target": "3"
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "type": "Room",
+        "shortDesc": "Room 3",
+        "exits": [
+            {
+                "direction": "north",
+                "target": "2"
+            },
+            {
+
+                "direction": "south",
+                "target": "4"
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "type": "Room",
+        "shortDesc": "Room 4",
+        "exits": [
+            {
+                "direction": "north",
+                "target": "3"
+            },
+            {
+
+                "direction": "south",
+                "target": "5"
+            }
+        ]
+    },
+    {
+        "id": "5",
+        "type": "Room",
+        "shortDesc": "Room 5",
+        "exits": [
+            {
+                "direction": "north",
+                "target": "4"
+            },
+            {
+
+                "direction": "south",
+                "target": "6"
+            }
+        ]
+    },
+    {
+        "id": "6",
+        "type": "Room",
+        "shortDesc": "Room 6",
+        "exits": [
+            {
+                "direction": "north",
+                "target": "5"
+            },
+            {
+
+                "direction": "south",
+                "target": "1"
+            }
+        ]
+    }
+]

@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import { Container, interfaces } from "inversify";
-import { Initializable, ApplicationClass, Application } from "./api";
-import { Logger } from "./logger";
-import { Server } from "./server";
-import { World } from "./world";
-import { Clock } from "./clock";
+import { Application, ApplicationClass, Config, Initializable } from "./api";
+import { Logger } from "./service/logger";
+import { Server } from "./service/server";
+import { World } from "./service/world";
+import { Clock } from "./service/clock";
 import { first } from "rxjs/operators";
 
 const container = new Container();
 
-export async function run(appClass: ApplicationClass, config: any) {
+export async function run(appClass: ApplicationClass, config: Config) {
     await init(Logger, config);
     await init(Clock, config);
-    await init(World, config);
-    await init(Server, config);
+    await init(World, config.world || {});
+    await init(Server, config.server || {});
 
     const app = bind(appClass) as Application;
     app.onInit();

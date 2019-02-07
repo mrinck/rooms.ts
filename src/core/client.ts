@@ -1,8 +1,7 @@
 import * as WebSocket from "ws";
-import { Subject, Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 export class Client {
-    
     messages: Observable<string>;
     disconnects: Observable<void>;
     
@@ -35,7 +34,11 @@ export class Client {
         });
     }
 
-    read(): Promise<string> {
+    read(message?: string): Promise<string> {
+        if (message) {
+            this.write(message);
+        }
+
         return new Promise(resolve => {
             const reader = (input: string) => resolve(input);
             this.readers.push(reader);
