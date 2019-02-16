@@ -15,6 +15,10 @@ export async function run(appClass: ApplicationClass, config: Config) {
     await init(World, config.world || {});
     await init(Server, config.server || {});
 
+    for (const commandClass of config.commands || []) {
+        bind(commandClass);
+    }
+
     const app = bind(appClass) as Application;
     app.onInit();
 }
