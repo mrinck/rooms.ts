@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
-import { ServerConfig } from "./service/server";
-import { WorldConfig } from "./service/world";
+import { ServerConfig } from "./server";
+import { WorldConfig } from "./world";
 
 export interface Application {
     onInit(): void;

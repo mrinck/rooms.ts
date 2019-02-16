@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import { Container, interfaces } from "inversify";
 import { Application, ApplicationClass, Config, Initializable } from "./api";
-import { Logger } from "./service/logger";
-import { Server } from "./service/server";
-import { World } from "./service/world";
-import { Clock } from "./service/clock";
+import { Logger } from "./logger";
+import { Server } from "./server";
+import { World } from "./world";
+import { Clock } from "./clock";
 import { first } from "rxjs/operators";
 
 const container = new Container();

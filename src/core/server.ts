@@ -1,10 +1,10 @@
 import * as WebSocket from "ws";
 import * as Http from "http";
-import { Client } from "../client";
+import { Client } from "./client";
 import { Observable, Subject } from "rxjs";
 import { first } from "rxjs/operators";
 import { injectable } from "inversify";
-import { Initializable } from "../api";
+import { Initializable } from "./api";
 import { Logger } from "./logger";
 
 @injectable()

@@ -1,24 +1,33 @@
+import { World } from "./world";
+
 export abstract class Entity {
     id?: string;
-    type: string;
-    parent: Entity;
+    parent?: Entity;
+    name?: string;
+    description?: string;
 
-    constructor(entityDatum?: EntityDatum) {
+    readonly type: string;
+
+    constructor() {
         this.type = this.constructor.name;
     }
 
-    abstract load(entityDatum: EntityDatum): void;
+    init(entityDatum: EntityDatum) {};
+   
+    afterWorldInit(world: World) {}
 
-    abstract toJSON(): EntityDatum;
+    toJSON(): EntityDatum | undefined {
+        return undefined;
+    };
 }
 
 
 export interface EntityClass {
-    new(entityDatum?: EntityDatum): Entity;
+    new(...args: any[]): Entity;
 }
 
 
 export interface EntityDatum {
-    id?: string;
+    id: string;
     type: string;
 }

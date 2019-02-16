@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { Initializable } from "../api";
+import { Initializable } from "./api";
 import { Observable, of } from "rxjs";
 
 @injectable()

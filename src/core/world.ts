@@ -1,15 +1,19 @@
 import { injectable } from "inversify";
-import { Initializable } from "../api";
-import { of, Observable } from "rxjs";
-import { Entity, EntityClass, EntityDatum } from "../entity";
+import { Initializable } from "./api";
+import { of, Observable, Subject } from "rxjs";
+import { Entity, EntityClass, EntityDatum } from "./entity";
+import { Player } from "./player";
 
 @injectable()
 export class World implements Initializable {
     entities: Entity[];
     entityClasses: EntityClass[];
+    entityAdded: Observable<Entity>;
 
     private _config: WorldConfig;
-    
+    private entityAddedSubject: Subject<Entity>;
+    private entityClassMap: { [key: string]: EntityClass }
+
     get config() {
         return this._config;
     }
@@ -22,35 +26,55 @@ export class World implements Initializable {
 
         this.entities = [];
         this.entityClasses = this.config.entityClasses!;
+        this.entityAddedSubject = new Subject();
+        this.entityAdded = this.entityAddedSubject.asObservable();
 
-        this.load(require(this.config.file));
+        this.entityClassMap = {};
+        for (const entityClass of this.entityClasses) {
+            this.entityClassMap[entityClass.name] = entityClass;
+        }
+
+        this.load();
 
         return of(true);
     }
 
-    load(entityData: EntityDatum[]) {
+    private load() {
+        const entityData = require(this.config.file) as EntityDatum[];
+        
         for (const entityDatum of entityData) {
             this.loadEntity(entityDatum);
+        }
+        
+        for (const entity of this.entities) {
+            entity.afterWorldInit(this);
         }
     }
 
     loadEntity(entityDatum: EntityDatum) {
         const type = entityDatum.type;
-        const entityClass = this.entityClasses.find(entityClass => entityClass.name == type);
-        
+        const entityClass = this.entityClassMap[type];
+
         if (entityClass) {
-            const entity = new entityClass(entityDatum);
+            const entity = new entityClass();
+            entity.init(entityDatum);
             this.addEntity(entity);
         }
     }
 
     addEntity(entity: Entity) {
-        console.log("[World] adding entity", entity.type, entity.id);
+        console.log("[World] adding", entity.type, "\"" + entity.name + "\"");
+
+        if (entity instanceof Player) {
+            entity.parent = this.entities[0];
+        }
+
         this.entities.push(entity);
+        this.entityAddedSubject.next(entity);
     }
 
     findEntityById(id: string): Entity | undefined {
-        const result = this.entities.filter(entitie => entitie.id === id);
+        const result = this.entities.filter(entity => entity.id === id);
         if (result) {
             return result[0];
         }

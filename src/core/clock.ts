@@ -1,6 +1,6 @@
 import { Subject, Observable, of } from "rxjs";
 import { injectable } from "inversify";
-import { Initializable } from "../api";
+import { Initializable } from "./api";
 
 @injectable()
 export class Clock implements Initializable {
