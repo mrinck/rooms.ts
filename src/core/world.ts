@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { Initializable } from "./api";
+import { Initializable, Config } from "./api";
 import { of, Observable, Subject } from "rxjs";
 import { Entity, EntityClass, EntityDatum } from "./entity";
 import { Player } from "./player";
@@ -18,10 +18,10 @@ export class World implements Initializable {
         return this._config;
     }
 
-    init(config: WorldConfig): Observable<boolean> {
+    init(config: Config): Observable<boolean> {
         this._config = {
-            file: config.file,
-            entityClasses: config.entityClasses || []
+            file: config.world && config.world.file || '',
+            entityClasses: config.entities
         };
 
         this.entities = [];
@@ -35,6 +35,8 @@ export class World implements Initializable {
         }
 
         this.load();
+
+        console.log("[World] loaded");
 
         return of(true);
     }

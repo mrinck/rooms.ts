@@ -2,6 +2,7 @@ import { Observable } from "rxjs";
 import { ServerConfig } from "./server";
 import { WorldConfig } from "./world";
 import { Player } from "./player";
+import { EntityClass } from "./entity";
 
 export interface Application {
     onInit(): void;
@@ -16,7 +17,8 @@ export interface ApplicationClass {
 export interface Config {
     server?: ServerConfig;
     world?: WorldConfig;
-    commands?: CommandClass[];
+    commands: CommandClass[];
+    entities: EntityClass[];
 }
 
 

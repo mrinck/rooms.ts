@@ -47,6 +47,7 @@ export class Server implements Initializable {
         });
 
         this.socket.on("listening", () => {
+            console.log("[Server] listening on port", this.config.port);
             this.initsSubject.next(this.socket.options.port);
         });
 
