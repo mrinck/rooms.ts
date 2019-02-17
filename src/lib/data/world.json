@@ -13,7 +13,8 @@
                 "direction": "south",
                 "target": "@2"
             }
-        ]
+        ],
+        "script": ""
     },
     {
         "id": "2",

@@ -37,6 +37,22 @@ export class Room extends Entity {
         this.exits.push(exit);
     }
 
+    getExitByDirection(direction: string): Entity | undefined {
+        for (const exit of this.exits) {
+            if (exit.direction === direction) {
+                return exit.target;
+            }
+        }
+    }
+
+    getExitDirections(): string[] {
+        return this.exits.map(exit => exit.direction);
+    }
+
+    getExitTargets(): Entity[] {
+        return this.exits.map(exit => exit.target);
+    }
+
     toJSON(): RoomDatum {
         return {
             id: this.id!,

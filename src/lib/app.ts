@@ -43,7 +43,8 @@ export class App implements Application {
     }
 
     async readCommand(player: Player) {
-        const input = await player.client.read(">");
+        let input = await player.client.read(">");
+        input = input.trim();
 
         switch (input) {
             case "quit":
@@ -74,9 +75,11 @@ export class App implements Application {
             case "west":
                 this.moveCommand.execute(player, "west");
                 break;
-                
+
             default:
-                this.defaultCommand.execute(player, input);
+                if (input.length > 0) {
+                    this.defaultCommand.execute(player, input);
+                }
                 break;
         }
 

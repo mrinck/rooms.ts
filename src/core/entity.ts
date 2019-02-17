@@ -12,6 +12,7 @@ export abstract class Entity {
         this.type = this.constructor.name;
     }
 
+
     init(entityDatum: EntityDatum) {};
    
     afterWorldInit(world: World) {}

@@ -51,7 +51,7 @@ export class World implements Initializable {
         }
     }
 
-    loadEntity(entityDatum: EntityDatum) {
+    private loadEntity(entityDatum: EntityDatum) {
         const type = entityDatum.type;
         const entityClass = this.entityClassMap[type];
 
@@ -78,6 +78,18 @@ export class World implements Initializable {
         if (result) {
             return result[0];
         }
+    }
+
+    getChildren(parent: Entity): Entity[] {
+        return this.entities.filter(entity => entity.parent === parent);
+    }
+
+    getSiblings(sibling: Entity): Entity[] {
+        if (sibling.parent) {
+            return this.entities.filter(entity => entity.parent === sibling.parent).filter(entity => entity != sibling);
+        }
+
+        return [];
     }
 
     /**

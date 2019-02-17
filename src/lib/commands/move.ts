@@ -9,20 +9,18 @@ export class MoveCommand implements Command {
 
     constructor(private lookCommand: LookCommand) { }
 
-    execute(player: Player, direction?: string) {
+    execute(player: Player, direction: string) {
         if (player.parent && player.parent instanceof Room) {
             const room = player.parent as Room;
+            const target = room.getExitByDirection(direction);
 
-            for (const exit of room.exits) {
-                if (exit.direction == direction) {
-                    player.parent = exit.target;
-                    this.lookCommand.execute(player);
-                    return;
-                }
+            if (target) {
+                player.parent = target;
+                this.lookCommand.execute(player);
+            } else {
+                player.client.write("You can't go in this direction.");
             }
-
-            player.client.write("You can't go in this direction.");
         }
-    }
 
+    }
 }
