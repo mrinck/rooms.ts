@@ -19,18 +19,18 @@
     },
     "homepage": "https://github.com/mrinck/rooms.ts#readme",
     "devDependencies": {
-        "@types/nedb": "^1.8.7",
-        "@types/node": "^10.12.18",
-        "@types/ws": "^6.0.1",
-        "nodemon": "^1.18.9",
-        "ts-node": "^8.0.1",
-        "typescript": "^3.2.4"
+        "@types/nedb": "1.8.7",
+        "@types/node": "11.9.4",
+        "@types/ws": "6.0.1",
+        "nodemon": "1.18.10",
+        "ts-node": "8.0.2",
+        "typescript": "3.3.3"
     },
     "dependencies": {
-        "inversify": "^5.0.1",
-        "nedb": "^1.8.0",
-        "reflect-metadata": "^0.1.13",
-        "rxjs": "^6.3.3",
-        "ws": "^6.1.2"
+        "inversify": "5.0.1",
+        "nedb": "1.8.0",
+        "reflect-metadata": "0.1.13",
+        "rxjs": "6.4.0",
+        "ws": "6.1.4"
     }
 }
