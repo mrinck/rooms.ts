@@ -2,7 +2,6 @@
     "name": "rooms.ts",
     "version": "1.0.0",
     "description": "A moo engine written in Typescript.",
-    "main": "dist/index.js",
     "scripts": {
         "start": "npm run build:live",
         "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts",

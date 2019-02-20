@@ -5,7 +5,7 @@ import { LookCommand } from "./lib/commands/look";
 import { MoveCommand } from "./lib/commands/move";
 import { DefaultCommand } from "./lib/commands/default";
 import { Application } from "./core/api";
-import { Server } from "./core/server";
+import { Network } from "./core/network";
 import { World } from "./core/world";
 import { Client } from "./core/client";
 import { Player } from "./core/player";
@@ -28,7 +28,7 @@ import { Player } from "./core/player";
 export class App implements Application {
 
     constructor(
-        private server: Server,
+        private network: Network,
         private world: World,
         private lookCommand: LookCommand,
         private moveCommand: MoveCommand,
@@ -37,7 +37,7 @@ export class App implements Application {
     ) { }
 
     onInit() {
-        this.server.clientConnects.subscribe(client => {
+        this.network.clientConnects.subscribe(client => {
             this.readName(client);
         });
     }

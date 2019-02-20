@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { Container, interfaces, decorate, injectable } from "inversify";
 import { Application, Config, Initializable } from "./api";
 import { Logger } from "./logger";
-import { Server } from "./server";
+import { Network } from "./network";
 import { World } from "./world";
 import { Clock } from "./clock";
 import { first } from "rxjs/operators";
@@ -17,7 +17,7 @@ export function run(config: Config) {
             await init(Logger, config);
             await init(Clock, config);
             await init(World, config);
-            await init(Server, config.server || {});
+            await init(Network, config.network || {});
 
             for (const commandClass of config.commands) {
                 bind(commandClass);

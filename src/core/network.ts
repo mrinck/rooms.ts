@@ -8,12 +8,12 @@ import { Initializable } from "./api";
 import { Logger } from "./logger";
 
 @injectable()
-export class Server implements Initializable {
+export class Network implements Initializable {
     clients: Client[];
     clientConnects: Observable<Client>;
 
     private port: number;
-    private _config: ServerConfig;
+    private _config: NetworkConfig;
     private http: Http.Server;
     private socket: WebSocket.Server;
     private clientConnectsSubject: Subject<Client>;
@@ -23,7 +23,7 @@ export class Server implements Initializable {
         private logger: Logger
     ) { }
 
-    init(config: ServerConfig): Observable<number> {
+    init(config: NetworkConfig): Observable<number> {
         this._config = {
             port: config.port || 8080
         };
@@ -72,6 +72,6 @@ export class Server implements Initializable {
 
 }
 
-export interface ServerConfig {
+export interface NetworkConfig {
     port?: number;
 }
