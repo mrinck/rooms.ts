@@ -68,7 +68,7 @@ export class World implements Initializable {
         console.log("[World] adding", entity.type, "\"" + entity.name + "\"");
 
         if (entity instanceof Player) {
-            entity.parent = this.entities[0];
+            entity.location = this.entities[0];
         }
 
         this.entities.push(entity);
@@ -83,12 +83,12 @@ export class World implements Initializable {
     }
 
     getChildren(parent: Entity): Entity[] {
-        return this.entities.filter(entity => entity.parent === parent);
+        return this.entities.filter(entity => entity.location === parent);
     }
 
     getSiblings(sibling: Entity): Entity[] {
-        if (sibling.parent) {
-            return this.entities.filter(entity => entity.parent === sibling.parent).filter(entity => entity != sibling);
+        if (sibling.location) {
+            return this.entities.filter(entity => entity.location === sibling.location).filter(entity => entity != sibling);
         }
 
         return [];

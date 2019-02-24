@@ -2,7 +2,7 @@ import { World } from "./world";
 
 export abstract class Entity {
     id?: string;
-    parent?: Entity;
+    location?: Entity;
     name?: string;
     description?: string;
 
