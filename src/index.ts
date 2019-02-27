@@ -1,4 +1,5 @@
 import { run } from "./core/run";
+import * as data from "./lib/data/world.json";
 import { Room } from "./lib/entities/room";
 import { QuitCommand } from "./lib/commands/quit";
 import { LookCommand } from "./lib/commands/look";
@@ -13,7 +14,7 @@ import { Player } from "./core/player";
 
 @run({
     world: {
-        file: __dirname + "/lib/data/world.json",
+        data: data,
     },
     entities: [
         Room

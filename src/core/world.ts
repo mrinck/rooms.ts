@@ -3,16 +3,18 @@ import { Initializable, Config } from "./api";
 import { of, Observable, Subject } from "rxjs";
 import { Entity, EntityClass, EntityDatum } from "./entity";
 import { Player } from "./player";
+import { EntityFactory } from "./entityFactory";
 
 @injectable()
 export class World implements Initializable {
     entities: Entity[];
-    entityClasses: EntityClass[];
+    
     entityAdded: Observable<Entity>;
 
     private _config: WorldConfig;
     private entityAddedSubject: Subject<Entity>;
-    private entityClassMap: { [key: string]: EntityClass }
+
+    constructor(private entityFactory: EntityFactory) {}
 
     get config() {
         return this._config;
@@ -20,19 +22,13 @@ export class World implements Initializable {
 
     init(config: Config): Observable<boolean> {
         this._config = {
-            file: config.world && config.world.file || '',
+            data: config.world && config.world.data || {},
             entityClasses: config.entities
         };
 
         this.entities = [];
-        this.entityClasses = this.config.entityClasses!;
         this.entityAddedSubject = new Subject();
         this.entityAdded = this.entityAddedSubject.asObservable();
-
-        this.entityClassMap = {};
-        for (const entityClass of this.entityClasses) {
-            this.entityClassMap[entityClass.name] = entityClass;
-        }
 
         this.load();
 
@@ -42,7 +38,7 @@ export class World implements Initializable {
     }
 
     private load() {
-        const entityData = require(this.config.file) as EntityDatum[];
+        const entityData = this.config.data as EntityDatum[];
         
         for (const entityDatum of entityData) {
             this.loadEntity(entityDatum);
@@ -54,12 +50,9 @@ export class World implements Initializable {
     }
 
     private loadEntity(entityDatum: EntityDatum) {
-        const type = entityDatum.type;
-        const entityClass = this.entityClassMap[type];
-
-        if (entityClass) {
-            const entity = new entityClass();
-            entity.init(entityDatum);
+        const entity = this.entityFactory.create(entityDatum);
+        
+        if (entity) {
             this.addEntity(entity);
         }
     }
@@ -109,6 +102,6 @@ export class World implements Initializable {
 }
 
 export interface WorldConfig {
-    file: string;
+    data: {};
     entityClasses?: EntityClass[];
 }

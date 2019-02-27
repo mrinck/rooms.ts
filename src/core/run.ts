@@ -6,6 +6,7 @@ import { Network } from "./network";
 import { World } from "./world";
 import { Clock } from "./clock";
 import { first } from "rxjs/operators";
+import { EntityFactory } from "./entityFactory";
 
 const container = new Container();
 
@@ -16,6 +17,7 @@ export function run(config: Config) {
         (async () => {
             await init(Logger, config);
             await init(Clock, config);
+            await init(EntityFactory, config);
             await init(World, config);
             await init(Network, config.network || {});
 
