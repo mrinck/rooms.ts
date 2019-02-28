@@ -1,12 +1,12 @@
 import { Entity } from "./entity";
 import { Client } from "./client";
+import { World } from "./world";
 
 export class Player extends Entity {
     name: string;
     client: Client;
 
-    constructor(client: Client) {
-        super();
-        this.client = client;
+    constructor(world: World) {
+        super(world);
     }
 }

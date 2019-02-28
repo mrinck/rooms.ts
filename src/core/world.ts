@@ -1,20 +1,21 @@
 import { injectable } from "inversify";
 import { Initializable, Config } from "./api";
 import { of, Observable, Subject } from "rxjs";
-import { Entity, EntityClass, EntityDatum } from "./entity";
+import { Entity, EntityClass, EntityDatum, EntityData } from "./entity";
 import { Player } from "./player";
 import { EntityFactory } from "./entityFactory";
 
 @injectable()
 export class World implements Initializable {
+    entityData: EntityData;
     entities: Entity[];
-    
+
     entityAdded: Observable<Entity>;
 
     private _config: WorldConfig;
     private entityAddedSubject: Subject<Entity>;
 
-    constructor(private entityFactory: EntityFactory) {}
+    constructor(private entityFactory: EntityFactory) { }
 
     get config() {
         return this._config;
@@ -39,19 +40,15 @@ export class World implements Initializable {
 
     private load() {
         const entityData = this.config.data as EntityDatum[];
-        
+
         for (const entityDatum of entityData) {
             this.loadEntity(entityDatum);
-        }
-        
-        for (const entity of this.entities) {
-            entity.afterWorldInit(this);
         }
     }
 
     private loadEntity(entityDatum: EntityDatum) {
         const entity = this.entityFactory.create(entityDatum);
-        
+
         if (entity) {
             this.addEntity(entity);
         }
@@ -66,6 +63,31 @@ export class World implements Initializable {
 
         this.entities.push(entity);
         this.entityAddedSubject.next(entity);
+    }
+
+    getEntity(id: string): Promise<Entity> {
+        return new Promise((resolve, reject) => {
+            let foundEntity = this.entities.find(entity => entity.id === id);
+
+            if (foundEntity) {
+                resolve(foundEntity);
+            } else {
+                const foundEntityDatum = this.entityData.find(entityDatum => entityDatum.id === id);
+
+                if (foundEntityDatum) {
+                    foundEntity = this.entityFactory.create(foundEntityDatum);
+
+                    if (foundEntity) {
+                        this.addEntity(foundEntity);
+                        resolve(foundEntity)
+                    } else {
+                        reject();
+                    }
+                } else {
+                    reject();
+                }
+            }
+        });
     }
 
     findEntityById(id: string): Entity | undefined {

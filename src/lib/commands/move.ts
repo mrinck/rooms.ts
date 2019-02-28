@@ -7,19 +7,19 @@ import { LookCommand } from "./look";
 @injectable()
 export class MoveCommand implements Command {
 
-    constructor(private lookCommand: LookCommand) { }
+    constructor(
+        private lookCommand: LookCommand
+    ) { }
 
     execute(player: Player, direction: string) {
         if (player.location && player.location instanceof Room) {
-            const room = player.location as Room;
-            const target = room.getExitByDirection(direction);
-
-            if (target) {
-                player.location = target;
+            const currentRoom = player.location as Room;
+            currentRoom.getRoomInDirection(direction).then(targetRoom => {
+                player.location = targetRoom;
                 this.lookCommand.execute(player);
-            } else {
+            }).catch(() => {
                 player.client.write("You can't go in this direction.");
-            }
+            });
         }
 
     }

@@ -7,8 +7,8 @@ export class Room extends Entity {
     exits: Exit[];
     datum: RoomDatum;
 
-    constructor() {
-        super();
+    constructor(world: World) {
+        super(world);
         this.exits = [];
     }
 
@@ -20,37 +20,31 @@ export class Room extends Entity {
         this.description = roomDatum.description;
     }
 
-    afterWorldInit(world: World) {
-        for (const exitDatum of this.datum.exits) {
-            const targetId = exitDatum.target.substr(1);
-            const target = world.findEntityById(targetId);
-            if (target) {
-                this.addExit({
-                    direction: exitDatum.direction,
-                    target: target
-                });
-            }
-        }
-    }
-
     addExit(exit: Exit) {
         this.exits.push(exit);
     }
 
-    getExitByDirection(direction: string): Entity | undefined {
-        for (const exit of this.exits) {
-            if (exit.direction === direction) {
-                return exit.target;
+    getRoomInDirection(direction: string): Promise<Room> {
+        return new Promise((resolve, reject) => {
+            let result;
+            for (const exit of this.exits) {
+                if (exit.direction === direction) {
+                    const room = this.world.getEntity(exit.roomId);
+                    if (room) {
+                        result = room;
+                    }
+                    break;
+                }
             }
-        }
+        });
     }
 
     getExitDirections(): string[] {
         return this.exits.map(exit => exit.direction);
     }
 
-    getExitTargets(): Entity[] {
-        return this.exits.map(exit => exit.target);
+    getExitTargets(): string[] {
+        return this.exits.map(exit => exit.roomId);
     }
 
     toJSON(): RoomDatum {
@@ -58,10 +52,10 @@ export class Room extends Entity {
             id: this.id!,
             type: this.type,
             description: this.description,
-            exits: this.exits.filter(exit => exit.target.id).map(exit => {
+            exits: this.exits.filter(exit => exit.roomId).map(exit => {
                 return {
                     direction: exit.direction,
-                    target: '@' + exit.target.id!
+                    room_id: exit.roomId!
                 }
             })
         }
@@ -71,12 +65,12 @@ export class Room extends Entity {
 
 export interface Exit {
     direction: string;
-    target: Entity;
+    roomId: string;
 }
 
 
 export interface RoomDatum extends EntityDatum {
     name?: string;
     description?: string,
-    exits: { direction: string, target: string }[]
+    exits: { direction: string, room_id: string }[]
 }

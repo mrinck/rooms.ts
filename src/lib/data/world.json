@@ -7,11 +7,11 @@
         "exits": [
             {
                 "direction": "north",
-                "target": "@6"
+                "room_id": "6"
             },
             {
                 "direction": "south",
-                "target": "@2"
+                "room_id": "2"
             }
         ],
         "script": ""
@@ -24,12 +24,12 @@
         "exits": [
             {
                 "direction": "north",
-                "target": "@1"
+                "room_id": "1"
             },
             {
 
                 "direction": "south",
-                "target": "@3"
+                "room_id": "3"
             }
         ]
     },
@@ -41,12 +41,12 @@
         "exits": [
             {
                 "direction": "north",
-                "target": "@2"
+                "room_id": "2"
             },
             {
 
                 "direction": "south",
-                "target": "@4"
+                "room_id": "4"
             }
         ]
     },
@@ -58,12 +58,12 @@
         "exits": [
             {
                 "direction": "north",
-                "target": "@3"
+                "room_id": "3"
             },
             {
 
                 "direction": "south",
-                "target": "@5"
+                "room_id": "5"
             }
         ]
     },
@@ -75,12 +75,12 @@
         "exits": [
             {
                 "direction": "north",
-                "target": "@4"
+                "room_id": "4"
             },
             {
 
                 "direction": "south",
-                "target": "@6"
+                "room_id": "6"
             }
         ]
     },
@@ -92,12 +92,12 @@
         "exits": [
             {
                 "direction": "north",
-                "target": "@5"
+                "room_id": "5"
             },
             {
 
                 "direction": "south",
-                "target": "@1"
+                "room_id": "1"
             }
         ]
     }

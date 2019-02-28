@@ -47,7 +47,8 @@ export class App implements Application {
         const name = await client.read("Name");
         client.write("Hi " + name);
 
-        const player = new Player(client);
+        const player = new Player(this.world);
+        player.client = client;
         player.name = name;
 
         this.world.addEntity(player);

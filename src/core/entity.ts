@@ -5,11 +5,13 @@ export abstract class Entity {
     location?: Entity;
     name?: string;
     description?: string;
+    world: World;
 
     readonly type: string;
 
-    constructor() {
+    constructor(world: World) {
         this.type = this.constructor.name;
+        this.world = world;
     }
 
 
@@ -32,3 +34,5 @@ export interface EntityDatum {
     id: string;
     type: string;
 }
+
+export type EntityData = EntityDatum[];
