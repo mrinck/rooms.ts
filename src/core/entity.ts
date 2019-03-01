@@ -1,8 +1,10 @@
 import { World } from "./world";
+import { Intent } from "./intent";
+import { Event } from "./event";
 
 export abstract class Entity {
     id?: string;
-    location?: Entity;
+    locationId?: string;
     name?: string;
     description?: string;
     world: World;
@@ -14,14 +16,17 @@ export abstract class Entity {
         this.world = world;
     }
 
+    onInit(entityDatum: EntityDatum) { }
 
-    init(entityDatum: EntityDatum) {};
-   
-    afterWorldInit(world: World) {}
+    onIntent(intent: Intent) { }
+
+    onEvent(event: Event) { }
+
+    notify(message: string) {}
 
     toJSON(): EntityDatum | undefined {
         return undefined;
-    };
+    }
 }
 
 

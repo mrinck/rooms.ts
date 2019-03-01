@@ -12,15 +12,16 @@ export class LookCommand implements Command {
     execute(player: Player) {
         const output: string[] = [];
 
-        if (player.location) {
+        const playerLocation = this.world.getEntity(player.locationId);
+        if (playerLocation) {
 
             // output description
-            if (player.location.description) {
-                output.push(player.location.description + "\n");
+            if (playerLocation.description) {
+                output.push(playerLocation.description + "\n");
             }
 
             // output contents
-            const locationContents = this.world.getChildren(player.location);
+            const locationContents = this.world.getChildren(playerLocation);
             if (locationContents.length > 1) {
                 for (const content of locationContents) {
                     if (content != player) {
@@ -30,8 +31,8 @@ export class LookCommand implements Command {
             }
 
             // output exits
-            if (player.location instanceof Room) {
-                output.push("Exits: " + player.location.getExitDirections().join(', ') + "\n");
+            if (playerLocation instanceof Room) {
+                output.push("Exits: " + playerLocation.getExitDirections().join(', ') + "\n");
             }
         } else {
             output.push('Whiteness');

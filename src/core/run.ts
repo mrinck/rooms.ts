@@ -7,6 +7,7 @@ import { World } from "./world";
 import { Clock } from "./clock";
 import { first } from "rxjs/operators";
 import { EntityFactory } from "./entityFactory";
+import { MoveAction } from "../lib/actions/move.action";
 
 const container = new Container();
 
@@ -20,6 +21,8 @@ export function run(config: Config) {
             await init(EntityFactory, config);
             await init(World, config);
             await init(Network, config.network || {});
+
+            bind(MoveAction);
 
             for (const commandClass of config.commands) {
                 bind(commandClass);

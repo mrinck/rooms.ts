@@ -26,7 +26,7 @@ export class EntityFactory {
 
         if (entityClass) {
             const entity = new entityClass();
-            entity.init(entityDatum);
+            entity.onInit(entityDatum);
             return entity;
         }
     }

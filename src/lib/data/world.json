@@ -7,14 +7,13 @@
         "exits": [
             {
                 "direction": "north",
-                "room_id": "6"
+                "targetId": "6"
             },
             {
                 "direction": "south",
-                "room_id": "2"
+                "targetId": "2"
             }
-        ],
-        "script": ""
+        ]
     },
     {
         "id": "2",
@@ -24,12 +23,12 @@
         "exits": [
             {
                 "direction": "north",
-                "room_id": "1"
+                "targetId": "1"
             },
             {
 
                 "direction": "south",
-                "room_id": "3"
+                "targetId": "3"
             }
         ]
     },
@@ -41,12 +40,12 @@
         "exits": [
             {
                 "direction": "north",
-                "room_id": "2"
+                "targetId": "2"
             },
             {
 
                 "direction": "south",
-                "room_id": "4"
+                "targetId": "4"
             }
         ]
     },
@@ -58,12 +57,12 @@
         "exits": [
             {
                 "direction": "north",
-                "room_id": "3"
+                "targetId": "3"
             },
             {
 
                 "direction": "south",
-                "room_id": "5"
+                "targetId": "5"
             }
         ]
     },
@@ -75,12 +74,12 @@
         "exits": [
             {
                 "direction": "north",
-                "room_id": "4"
+                "targetId": "4"
             },
             {
 
                 "direction": "south",
-                "room_id": "6"
+                "targetId": "6"
             }
         ]
     },
@@ -92,12 +91,12 @@
         "exits": [
             {
                 "direction": "north",
-                "room_id": "5"
+                "targetId": "5"
             },
             {
 
                 "direction": "south",
-                "room_id": "1"
+                "targetId": "1"
             }
         ]
     }

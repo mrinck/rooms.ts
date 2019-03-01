@@ -58,52 +58,26 @@ export class World implements Initializable {
         console.log("[World] adding", entity.type, "\"" + entity.name + "\"");
 
         if (entity instanceof Player) {
-            entity.location = this.entities[0];
+            entity.locationId = this.entities[0].id;
         }
 
         this.entities.push(entity);
         this.entityAddedSubject.next(entity);
     }
 
-    getEntity(id: string): Promise<Entity> {
-        return new Promise((resolve, reject) => {
-            let foundEntity = this.entities.find(entity => entity.id === id);
-
-            if (foundEntity) {
-                resolve(foundEntity);
-            } else {
-                const foundEntityDatum = this.entityData.find(entityDatum => entityDatum.id === id);
-
-                if (foundEntityDatum) {
-                    foundEntity = this.entityFactory.create(foundEntityDatum);
-
-                    if (foundEntity) {
-                        this.addEntity(foundEntity);
-                        resolve(foundEntity)
-                    } else {
-                        reject();
-                    }
-                } else {
-                    reject();
-                }
-            }
-        });
-    }
-
-    findEntityById(id: string): Entity | undefined {
-        const result = this.entities.filter(entity => entity.id === id);
-        if (result) {
-            return result[0];
+    getEntity(id?: string): Entity | undefined {
+        if (id) {
+            return this.entities.find(entity => entity.id === id);
         }
     }
 
     getChildren(parent: Entity): Entity[] {
-        return this.entities.filter(entity => entity.location === parent);
+        return this.entities.filter(entity => entity.locationId === parent.id);
     }
 
     getSiblings(sibling: Entity): Entity[] {
-        if (sibling.location) {
-            return this.entities.filter(entity => entity.location === sibling.location).filter(entity => entity != sibling);
+        if (sibling.locationId) {
+            return this.entities.filter(entity => entity.locationId === sibling.locationId).filter(entity => entity != sibling);
         }
 
         return [];

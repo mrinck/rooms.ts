@@ -1,5 +1,7 @@
 import { Entity, EntityDatum } from "../../core/entity";
 import { World } from "../../core/world";
+import { Intent } from "../../core/intent";
+import { MoveIntent } from "../intents/move.intent";
 
 export class Room extends Entity {
     name?: string;
@@ -12,39 +14,45 @@ export class Room extends Entity {
         this.exits = [];
     }
 
-    init(roomDatum: RoomDatum) {
+    onInit(roomDatum: RoomDatum) {
         this.datum = roomDatum;
 
         this.id = roomDatum.id;
         this.name = roomDatum.name;
         this.description = roomDatum.description;
+        this.exits = roomDatum.exits;
     }
 
     addExit(exit: Exit) {
         this.exits.push(exit);
     }
 
-    getRoomInDirection(direction: string): Promise<Room> {
-        return new Promise((resolve, reject) => {
-            let result;
-            for (const exit of this.exits) {
-                if (exit.direction === direction) {
-                    const room = this.world.getEntity(exit.roomId);
-                    if (room) {
-                        result = room;
-                    }
-                    break;
-                }
+    getExitTargetIdInDirection(direction: string): string | undefined {
+        for (const exit of this.exits) {
+            if (exit.direction === direction) {
+                return exit.targetId;
             }
-        });
+        }
     }
 
     getExitDirections(): string[] {
         return this.exits.map(exit => exit.direction);
     }
 
-    getExitTargets(): string[] {
-        return this.exits.map(exit => exit.roomId);
+    getExitTargetIds(): string[] {
+        return this.exits.map(exit => exit.targetId);
+    }
+
+    onIntent(intent: Intent) {
+        console.log("ROOM INTENT");
+        if (intent instanceof MoveIntent) {
+            const exitTargetId = this.getExitTargetIdInDirection(intent.direction);
+            if (exitTargetId) {
+                intent.subject.locationId = exitTargetId;
+            } else {
+                intent.prevent("You can't go in this direction");
+            }
+        }
     }
 
     toJSON(): RoomDatum {
@@ -52,25 +60,18 @@ export class Room extends Entity {
             id: this.id!,
             type: this.type,
             description: this.description,
-            exits: this.exits.filter(exit => exit.roomId).map(exit => {
-                return {
-                    direction: exit.direction,
-                    room_id: exit.roomId!
-                }
-            })
+            exits: this.exits
         }
     }
 }
 
-
 export interface Exit {
     direction: string;
-    roomId: string;
+    targetId: string;
 }
-
 
 export interface RoomDatum extends EntityDatum {
     name?: string;
     description?: string,
-    exits: { direction: string, room_id: string }[]
+    exits: Exit[]
 }
