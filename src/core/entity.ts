@@ -1,6 +1,4 @@
 import { World } from "./world";
-import { Intent } from "./intent";
-import { Event } from "./event";
 
 export abstract class Entity {
     id?: string;
@@ -17,10 +15,6 @@ export abstract class Entity {
     }
 
     onInit(entityDatum: EntityDatum) { }
-
-    onIntent(intent: Intent) { }
-
-    onEvent(event: Event) { }
 
     notify(message: string) {}
 

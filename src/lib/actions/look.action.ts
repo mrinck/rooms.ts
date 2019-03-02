@@ -1,11 +1,10 @@
 import { Entity } from "../../core/entity";
 import { Action } from "../../core/action";
 
-export class MoveAction extends Action {
+export class LookAction extends Action {
 
     constructor(
-        public subject: Entity,
-        public direction: string
+        public subject: Entity
     ) {
         super();
     }

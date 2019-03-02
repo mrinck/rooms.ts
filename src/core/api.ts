@@ -3,6 +3,13 @@ import { NetworkConfig } from "./network";
 import { WorldConfig } from "./world";
 import { Player } from "./player";
 import { EntityClass } from "./entity";
+import { Action } from "./action";
+import { System } from "./system";
+
+export interface ActionClass {
+    new(...params: any[]): Action;
+}
+
 
 export interface Application {
     onInit(): void;
@@ -32,4 +39,8 @@ export interface Command {
 
 export interface CommandClass {
     new(...args: any[]): Command;
+}
+
+export interface SystemClass {
+    new(...args: any[]): System;
 }

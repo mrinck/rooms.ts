@@ -1,13 +1,10 @@
 import { Entity, EntityDatum } from "../../core/entity";
 import { World } from "../../core/world";
-import { Intent } from "../../core/intent";
-import { MoveIntent } from "../intents/move.intent";
 
 export class Room extends Entity {
     name?: string;
     description?: string;
     exits: Exit[];
-    datum: RoomDatum;
 
     constructor(world: World) {
         super(world);
@@ -15,8 +12,6 @@ export class Room extends Entity {
     }
 
     onInit(roomDatum: RoomDatum) {
-        this.datum = roomDatum;
-
         this.id = roomDatum.id;
         this.name = roomDatum.name;
         this.description = roomDatum.description;
@@ -41,18 +36,6 @@ export class Room extends Entity {
 
     getExitTargetIds(): string[] {
         return this.exits.map(exit => exit.targetId);
-    }
-
-    onIntent(intent: Intent) {
-        console.log("ROOM INTENT");
-        if (intent instanceof MoveIntent) {
-            const exitTargetId = this.getExitTargetIdInDirection(intent.direction);
-            if (exitTargetId) {
-                intent.subject.locationId = exitTargetId;
-            } else {
-                intent.prevent("You can't go in this direction");
-            }
-        }
     }
 
     toJSON(): RoomDatum {

@@ -7,7 +7,9 @@ import { World } from "./world";
 import { Clock } from "./clock";
 import { first } from "rxjs/operators";
 import { EntityFactory } from "./entityFactory";
-import { MoveAction } from "../lib/actions/move.action";
+import { MovementSystem } from "../lib/systems/movement.system";
+import { Dispatcher } from "./dispatcher";
+import { VideoSystem } from "../lib/systems/video.system";
 
 const container = new Container();
 
@@ -17,12 +19,14 @@ export function run(config: Config) {
 
         (async () => {
             await init(Logger, config);
+            await init(Dispatcher, config);
             await init(Clock, config);
             await init(EntityFactory, config);
             await init(World, config);
             await init(Network, config.network || {});
 
-            bind(MoveAction);
+            bind(MovementSystem);
+            bind(VideoSystem);
 
             for (const commandClass of config.commands) {
                 bind(commandClass);

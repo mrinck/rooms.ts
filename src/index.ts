@@ -10,6 +10,11 @@ import { Network } from "./core/network";
 import { World } from "./core/world";
 import { Client } from "./core/client";
 import { Player } from "./core/player";
+import { Dispatcher } from "./core/dispatcher";
+import { MovementSystem } from "./lib/systems/movement.system";
+import { MoveAction } from "./lib/actions/move.action";
+import { VideoSystem } from "./lib/systems/video.system";
+import { LookAction } from "./lib/actions/look.action";
 
 
 @run({
@@ -34,13 +39,19 @@ export class App implements Application {
         private lookCommand: LookCommand,
         private moveCommand: MoveCommand,
         private quitCommand: QuitCommand,
-        private defaultCommand: DefaultCommand
+        private defaultCommand: DefaultCommand,
+        private dispatcher: Dispatcher,
+        private movementSystem: MovementSystem,
+        private videoSystem: VideoSystem
     ) { }
 
     onInit() {
         this.network.clientConnects.subscribe(client => {
             this.readName(client);
         });
+
+        this.dispatcher.register(this.movementSystem, [MoveAction]);
+        this.dispatcher.register(this.videoSystem, [LookAction]);
     }
 
     async readName(client: Client) {
@@ -52,7 +63,7 @@ export class App implements Application {
         player.name = name;
 
         this.world.addEntity(player);
-        this.lookCommand.execute(player);
+        this.dispatcher.dispatch(new LookAction(player));
 
         this.readCommand(player);
     }
