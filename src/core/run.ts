@@ -7,9 +7,7 @@ import { World } from "./world";
 import { Clock } from "./clock";
 import { first } from "rxjs/operators";
 import { EntityFactory } from "./entityFactory";
-import { MovementSystem } from "../lib/systems/movement.system";
 import { Dispatcher } from "./dispatcher";
-import { VideoSystem } from "../lib/systems/video.system";
 
 const container = new Container();
 
@@ -25,8 +23,9 @@ export function run(config: Config) {
             await init(World, config);
             await init(Network, config.network || {});
 
-            bind(MovementSystem);
-            bind(VideoSystem);
+            for (const systemClass of config.systems) {
+                bind(systemClass);
+            }
 
             for (const commandClass of config.commands) {
                 bind(commandClass);

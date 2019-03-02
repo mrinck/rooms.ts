@@ -26,6 +26,7 @@ export interface Config {
     world?: WorldConfig;
     commands: CommandClass[];
     entities: EntityClass[];
+    systems: SystemClass[];
 }
 
 

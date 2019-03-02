@@ -6,7 +6,7 @@ import { Player } from "../../core/player";
 export class DefaultCommand implements Command {
 
     execute(player: Player, input: any) {
-        player.client.write("Unknown command: " + input);
+        player.notify("Unknown command: " + input);
     }
 
 }

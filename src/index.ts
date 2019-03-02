@@ -29,6 +29,10 @@ import { LookAction } from "./lib/actions/look.action";
         LookCommand,
         MoveCommand,
         QuitCommand
+    ],
+    systems: [
+        MovementSystem,
+        VideoSystem
     ]
 })
 export class App implements Application {

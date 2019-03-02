@@ -7,9 +7,7 @@ import { Dispatcher } from "../../core/dispatcher";
 @injectable()
 export class MoveCommand implements Command {
 
-    constructor(
-        private dispatcher: Dispatcher
-    ) { }
+    constructor(private dispatcher: Dispatcher) { }
 
     execute(player: Player, direction: string) {
         const action = new MoveAction(player, direction);
