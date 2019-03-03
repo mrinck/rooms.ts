@@ -5,13 +5,13 @@ import { LookAction } from "../actions/look.action";
 import { Room } from "../entities/room";
 
 @injectable()
-export class VideoSystem implements System {
+export class PerceptionHandler implements System {
 
     constructor(
         private world: World
     ) { }
 
-    perform(action: LookAction) {
+    onAction(action: LookAction) {
         const output: string[] = [];
 
         const playerLocation = this.world.getEntity(action.subject.locationId);

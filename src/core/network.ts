@@ -12,7 +12,6 @@ export class Network implements Initializable {
     clients: Client[];
     clientConnects: Observable<Client>;
 
-    private port: number;
     private _config: NetworkConfig;
     private http: Http.Server;
     private socket: WebSocket.Server;
@@ -23,7 +22,7 @@ export class Network implements Initializable {
         private logger: Logger
     ) { }
 
-    init(config: NetworkConfig): Observable<number> {
+    init(config: NetworkConfig): Promise<number> {
         this._config = {
             port: config.port || 8080
         };
@@ -51,7 +50,7 @@ export class Network implements Initializable {
             this.initsSubject.next(this.socket.options.port);
         });
 
-        return this.initsSubject.asObservable();
+        return this.initsSubject.pipe(first()).toPromise();
     }
 
     get config() {

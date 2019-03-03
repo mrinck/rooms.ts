@@ -10,14 +10,12 @@ export class Clock implements Initializable {
     private time: number;
     private ticksSubject: Subject<number>;
     
-    init(config: any): Observable<boolean> {
+    async init(config: any) {
         this.time = 0;
         this.ticksSubject = new Subject();
         this.ticks = this.ticksSubject.asObservable();
         this.running = true;
         this.tick();
-
-        return of(true);
     }
 
     stop() {

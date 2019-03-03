@@ -1,10 +1,9 @@
 import { Action } from "./action";
-import { ActionClass, SystemClass } from "./api";
+import { Event } from "./event";
 
-export abstract class System {
+export interface System {
 
-    // abstract for(actions: ActionClass[]): SystemClass;
+    onAction(action: Action): void
 
-    abstract perform(action: Action): void;
-
+    onEvent?(event: Event): void
 }

@@ -1,4 +1,3 @@
-import { Observable } from "rxjs";
 import { NetworkConfig } from "./network";
 import { WorldConfig } from "./world";
 import { Player } from "./player";
@@ -24,14 +23,13 @@ export interface ApplicationClass {
 export interface Config {
     network?: NetworkConfig;
     world?: WorldConfig;
-    commands: CommandClass[];
     entities: EntityClass[];
     systems: SystemClass[];
 }
 
 
 export interface Initializable {
-    init(config: any): Observable<any>;
+    init(config: any): Promise<any>;
 }
 
 export interface Command {

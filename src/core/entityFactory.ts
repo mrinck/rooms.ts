@@ -9,15 +9,13 @@ export class EntityFactory {
 
     private entityClassMap: { [key: string]: EntityClass }
 
-    init(config: Config): Observable<boolean> {
+    async init(config: Config) {
         this.entityClasses = config.entities || [];
-
         this.entityClassMap = {};
+
         for (const entityClass of this.entityClasses) {
             this.entityClassMap[entityClass.name] = entityClass;
         }
-
-        return of(true);
     }
 
     create(entityDatum: EntityDatum): Entity | undefined {

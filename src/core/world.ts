@@ -21,7 +21,7 @@ export class World implements Initializable {
         return this._config;
     }
 
-    init(config: Config): Observable<boolean> {
+    async init(config: Config) {
         this._config = {
             data: config.world && config.world.data || {},
             entityClasses: config.entities
@@ -34,8 +34,6 @@ export class World implements Initializable {
         this.load();
 
         console.log("[World] loaded");
-
-        return of(true);
     }
 
     private load() {

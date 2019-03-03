@@ -1,20 +1,18 @@
 import { run } from "./core/run";
 import * as data from "./lib/data/world.json";
 import { Room } from "./lib/entities/room";
-import { QuitCommand } from "./lib/commands/quit";
-import { LookCommand } from "./lib/commands/look";
-import { MoveCommand } from "./lib/commands/move";
-import { DefaultCommand } from "./lib/commands/default";
 import { Application } from "./core/api";
 import { Network } from "./core/network";
 import { World } from "./core/world";
 import { Client } from "./core/client";
 import { Player } from "./core/player";
 import { Dispatcher } from "./core/dispatcher";
-import { MovementSystem } from "./lib/systems/movement.system";
 import { MoveAction } from "./lib/actions/move.action";
-import { VideoSystem } from "./lib/systems/video.system";
 import { LookAction } from "./lib/actions/look.action";
+import { MovementHandler } from "./lib/handlers/movement.handler";
+import { PerceptionHandler } from "./lib/handlers/perception.handler";
+import { QuitAction } from "./lib/actions/quit.action";
+import { QuitHandler } from "./lib/handlers/quit.handler";
 
 
 @run({
@@ -24,15 +22,10 @@ import { LookAction } from "./lib/actions/look.action";
     entities: [
         Room
     ],
-    commands: [
-        DefaultCommand,
-        LookCommand,
-        MoveCommand,
-        QuitCommand
-    ],
     systems: [
-        MovementSystem,
-        VideoSystem
+        MovementHandler,
+        PerceptionHandler,
+        QuitHandler
     ]
 })
 export class App implements Application {
@@ -40,22 +33,30 @@ export class App implements Application {
     constructor(
         private network: Network,
         private world: World,
-        private lookCommand: LookCommand,
-        private moveCommand: MoveCommand,
-        private quitCommand: QuitCommand,
-        private defaultCommand: DefaultCommand,
         private dispatcher: Dispatcher,
-        private movementSystem: MovementSystem,
-        private videoSystem: VideoSystem
+        private movementHandler: MovementHandler,
+        private perceptionHandler: PerceptionHandler,
+        private quitHandler: QuitHandler
     ) { }
 
     onInit() {
+        this.dispatcher.action.subscribe(action => {
+            switch (action.constructor) {
+                case LookAction:
+                    this.perceptionHandler.onAction(action as LookAction);
+                    break;
+                case MoveAction:
+                    this.movementHandler.onAction(action as MoveAction);
+                    break;
+                case QuitAction:
+                    this.quitHandler.onAction(action as QuitAction);
+                    break;
+            }
+        });
+
         this.network.clientConnects.subscribe(client => {
             this.readName(client);
         });
-
-        this.dispatcher.register(this.movementSystem, [MoveAction]);
-        this.dispatcher.register(this.videoSystem, [LookAction]);
     }
 
     async readName(client: Client) {
@@ -78,37 +79,37 @@ export class App implements Application {
 
         switch (input) {
             case "quit":
-                this.quitCommand.execute(player);
+            this.dispatcher.dispatch(new QuitAction(player));
                 break;
 
             case "l":
             case "look":
-                this.lookCommand.execute(player);
+                this.dispatcher.dispatch(new LookAction(player));
                 break;
 
             case "n":
             case "north":
-                this.moveCommand.execute(player, "north");
+                this.dispatcher.dispatch(new MoveAction(player, "north"));
                 break;
 
             case "e":
             case "east":
-                this.moveCommand.execute(player, "east");
+                this.dispatcher.dispatch(new MoveAction(player, "east"));
                 break;
 
             case "s":
             case "south":
-                this.moveCommand.execute(player, "south");
+                this.dispatcher.dispatch(new MoveAction(player, "south"));
                 break;
 
             case "w":
             case "west":
-                this.moveCommand.execute(player, "west");
+                this.dispatcher.dispatch(new MoveAction(player, "west"));
                 break;
 
             default:
                 if (input.length > 0) {
-                    this.defaultCommand.execute(player, input);
+                    player.notify("unknown command: " + input);
                 }
                 break;
         }

@@ -1,4 +1,5 @@
 import { World } from "./world";
+import { Action } from "./action";
 
 export abstract class Entity {
     id?: string;
@@ -15,6 +16,8 @@ export abstract class Entity {
     }
 
     onInit(entityDatum: EntityDatum) { }
+
+    onAction(action: Action) {}
 
     notify(message: string) {}
 

@@ -5,7 +5,6 @@ import { Logger } from "./logger";
 import { Network } from "./network";
 import { World } from "./world";
 import { Clock } from "./clock";
-import { first } from "rxjs/operators";
 import { EntityFactory } from "./entityFactory";
 import { Dispatcher } from "./dispatcher";
 
@@ -27,10 +26,6 @@ export function run(config: Config) {
                 bind(systemClass);
             }
 
-            for (const commandClass of config.commands) {
-                bind(commandClass);
-            }
-
             const app = bind(target) as Application;
             app.onInit();
         })();
@@ -39,13 +34,10 @@ export function run(config: Config) {
 
 function bind<T>(service: interfaces.ServiceIdentifier<T>): any {
     container.bind(service).toSelf().inSingletonScope();
-
     return container.get(service);
 }
 
 function init<T>(service: interfaces.ServiceIdentifier<T>, config: any): Promise<void> {
     const instance = bind(service) as Initializable;
-    const observable = instance.init(config);
-
-    return observable.pipe(first()).toPromise();
+    return instance.init(config);
 }
