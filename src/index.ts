@@ -43,10 +43,10 @@ export class App implements Application {
         this.dispatcher.action.subscribe(action => {
             switch (action.constructor) {
                 case LookAction:
-                    this.lookHandler.onAction(action as LookAction);
+                    this.lookHandler.onLookAction(action as LookAction);
                     break;
                 case MoveAction:
-                    this.movementHandler.onAction(action as MoveAction);
+                    this.movementHandler.onMoveAction(action as MoveAction);
                     break;
                 case QuitAction:
                     this.quitHandler.onAction(action as QuitAction);

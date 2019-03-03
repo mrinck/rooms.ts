@@ -1,17 +1,16 @@
 import { injectable } from "inversify";
-import { System } from "../../../core/system";
 import { World } from "../../../core/world";
 import { Room } from "../../entities/room";
 import { LookAction } from "./look.action";
 
 @injectable()
-export class LookHandler implements System {
+export class LookHandler {
 
     constructor(
         private world: World
     ) { }
 
-    onAction(action: LookAction) {
+    onLookAction(action: LookAction) {
         const output: string[] = [];
 
         const playerLocation = this.world.getEntity(action.subject.locationId);

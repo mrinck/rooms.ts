@@ -22,10 +22,22 @@ export class Room extends Entity {
         this.exits.push(exit);
     }
 
-    getExitTargetIdInDirection(direction: string): string | undefined {
-        for (const exit of this.exits) {
-            if (exit.direction === direction) {
-                return exit.targetId;
+    getExitTargetIdInDirection(direction?: string): string | undefined {
+        if (direction) {
+            for (const exit of this.exits) {
+                if (exit.direction === direction) {
+                    return exit.targetId;
+                }
+            }
+        }
+    }
+
+    getExitDirectionOfTargetId(targetId?: string): string | undefined {
+        if (targetId) {
+            for (const exit of this.exits) {
+                if (exit.targetId === targetId) {
+                    return exit.direction;
+                }
             }
         }
     }

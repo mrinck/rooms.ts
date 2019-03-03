@@ -3,7 +3,6 @@ import { WorldConfig } from "./world";
 import { Player } from "./player";
 import { EntityClass } from "./entity";
 import { Action } from "./action";
-import { System } from "./system";
 
 export interface ActionClass {
     new(...params: any[]): Action;
@@ -41,5 +40,5 @@ export interface CommandClass {
 }
 
 export interface SystemClass {
-    new(...args: any[]): System;
+    new(...args: any[]): any;
 }
