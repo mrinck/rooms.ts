@@ -74,46 +74,50 @@ export class App implements Application {
     }
 
     async readCommand(player: Player) {
-        let input = await player.client.read(">");
-        input = input.trim();
+        try {
+            let input = await player.client.read(">");
+            input = input.trim();
 
-        switch (input) {
-            case "quit":
-            this.dispatcher.dispatch(new QuitAction(player));
-                break;
+            switch (input) {
+                case "quit":
+                    this.dispatcher.dispatch(new QuitAction(player));
+                    break;
 
-            case "l":
-            case "look":
-                this.dispatcher.dispatch(new LookAction(player));
-                break;
+                case "l":
+                case "look":
+                    this.dispatcher.dispatch(new LookAction(player));
+                    break;
 
-            case "n":
-            case "north":
-                this.dispatcher.dispatch(new MoveAction(player, "north"));
-                break;
+                case "n":
+                case "north":
+                    this.dispatcher.dispatch(new MoveAction(player, "north"));
+                    break;
 
-            case "e":
-            case "east":
-                this.dispatcher.dispatch(new MoveAction(player, "east"));
-                break;
+                case "e":
+                case "east":
+                    this.dispatcher.dispatch(new MoveAction(player, "east"));
+                    break;
 
-            case "s":
-            case "south":
-                this.dispatcher.dispatch(new MoveAction(player, "south"));
-                break;
+                case "s":
+                case "south":
+                    this.dispatcher.dispatch(new MoveAction(player, "south"));
+                    break;
 
-            case "w":
-            case "west":
-                this.dispatcher.dispatch(new MoveAction(player, "west"));
-                break;
+                case "w":
+                case "west":
+                    this.dispatcher.dispatch(new MoveAction(player, "west"));
+                    break;
 
-            default:
-                if (input.length > 0) {
-                    player.notify("unknown command: " + input);
-                }
-                break;
+                default:
+                    if (input.length > 0) {
+                        player.notify("unknown command: " + input);
+                    }
+                    break;
+            }
+
+            this.readCommand(player);
+        } catch (e) {
+            // NOOP
         }
-
-        this.readCommand(player);
     }
 }

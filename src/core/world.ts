@@ -63,6 +63,15 @@ export class World implements Initializable {
         this.entityAddedSubject.next(entity);
     }
 
+    removeEntity(entity: Entity) {
+        console.log("[World] removing", entity.type, "\"" + entity.name + "\"");
+
+        const index = this.entities.indexOf(entity);
+        if (index) {
+            this.entities.splice(index, 1);
+        }
+    }
+
     getEntity(id?: string): Entity | undefined {
         if (id) {
             return this.entities.find(entity => entity.id === id);
