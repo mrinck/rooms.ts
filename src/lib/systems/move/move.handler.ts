@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
-import { World } from "../../core/world";
-import { Dispatcher } from "../../core/dispatcher";
-import { Room } from "../entities/room";
-import { MoveAction } from "../actions/move.action";
-import { LookAction } from "../actions/look.action";
-import { Entity } from "../../core/entity";
+import { World } from "../../../core/world";
+import { Dispatcher } from "../../../core/dispatcher";
+import { Room } from "../../entities/room";
+import { LookAction } from "../look/look.action";
+import { Entity } from "../../../core/entity";
+import { MoveAction } from "./move.action";
 
 enum MoveOutcome {
     Error,
@@ -14,7 +14,7 @@ enum MoveOutcome {
 }
 
 @injectable()
-export class MovementHandler {
+export class MoveHandler {
 
     constructor(
         private world: World,

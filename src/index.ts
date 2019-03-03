@@ -7,12 +7,12 @@ import { World } from "./core/world";
 import { Client } from "./core/client";
 import { Player } from "./core/player";
 import { Dispatcher } from "./core/dispatcher";
-import { MoveAction } from "./lib/actions/move.action";
-import { LookAction } from "./lib/actions/look.action";
-import { MovementHandler } from "./lib/handlers/movement.handler";
-import { PerceptionHandler } from "./lib/handlers/perception.handler";
-import { QuitAction } from "./lib/actions/quit.action";
-import { QuitHandler } from "./lib/handlers/quit.handler";
+import { MoveAction } from "./lib/systems/move/move.action";
+import { MoveHandler } from "./lib/systems/move/move.handler";
+import { LookHandler } from "./lib/systems/look/look.handler";
+import { QuitAction } from "./lib/systems/quit/quit.action";
+import { QuitHandler } from "./lib/systems/quit/quit.handler";
+import { LookAction } from "./lib/systems/look/look.action";
 
 
 @run({
@@ -23,8 +23,8 @@ import { QuitHandler } from "./lib/handlers/quit.handler";
         Room
     ],
     systems: [
-        MovementHandler,
-        PerceptionHandler,
+        LookHandler,
+        MoveHandler,
         QuitHandler
     ]
 })
@@ -34,8 +34,8 @@ export class App implements Application {
         private network: Network,
         private world: World,
         private dispatcher: Dispatcher,
-        private movementHandler: MovementHandler,
-        private perceptionHandler: PerceptionHandler,
+        private movementHandler: MoveHandler,
+        private lookHandler: LookHandler,
         private quitHandler: QuitHandler
     ) { }
 
@@ -43,7 +43,7 @@ export class App implements Application {
         this.dispatcher.action.subscribe(action => {
             switch (action.constructor) {
                 case LookAction:
-                    this.perceptionHandler.onAction(action as LookAction);
+                    this.lookHandler.onAction(action as LookAction);
                     break;
                 case MoveAction:
                     this.movementHandler.onAction(action as MoveAction);

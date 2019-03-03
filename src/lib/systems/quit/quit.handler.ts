@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { QuitAction } from "../actions/quit.action";
+import { QuitAction } from "./quit.action";
 
 @injectable()
 export class QuitHandler {

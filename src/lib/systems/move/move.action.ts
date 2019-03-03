@@ -1,5 +1,5 @@
-import { Entity } from "../../core/entity";
-import { Action } from "../../core/action";
+import { Entity } from "../../../core/entity";
+import { Action } from "../../../core/action";
 
 export class MoveAction extends Action {
 

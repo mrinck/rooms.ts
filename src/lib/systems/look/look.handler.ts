@@ -1,11 +1,11 @@
 import { injectable } from "inversify";
-import { System } from "../../core/system";
-import { World } from "../../core/world";
-import { LookAction } from "../actions/look.action";
-import { Room } from "../entities/room";
+import { System } from "../../../core/system";
+import { World } from "../../../core/world";
+import { Room } from "../../entities/room";
+import { LookAction } from "./look.action";
 
 @injectable()
-export class PerceptionHandler implements System {
+export class LookHandler implements System {
 
     constructor(
         private world: World
