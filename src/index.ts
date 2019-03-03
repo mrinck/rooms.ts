@@ -49,7 +49,7 @@ export class App implements Application {
                     this.movementHandler.onMoveAction(action as MoveAction);
                     break;
                 case QuitAction:
-                    this.quitHandler.onAction(action as QuitAction);
+                    this.quitHandler.onQuitAction(action as QuitAction);
                     break;
             }
         });
@@ -110,7 +110,7 @@ export class App implements Application {
 
                 default:
                     if (input.length > 0) {
-                        player.notify("unknown command: " + input);
+                        player.notify("Unknown command: " + input);
                     }
                     break;
             }

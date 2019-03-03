@@ -7,9 +7,19 @@ export class QuitHandler {
 
     constructor(private world: World) {}
 
-    onAction(action: QuitAction) {
+    onQuitAction(action: QuitAction) {
+        const locationId = action.player.locationId;
+        const location = this.world.getEntity(locationId);
+
+        if (location) {
+            for (const observer of this.world.getChildren(location)) {
+                if (observer !== action.player) {
+                    observer.notify(action.player.name + " disappears.");
+                }
+            }
+        }
+
         this.world.removeEntity(action.player);
         action.player.client.disconnect();
     }
-
 }
