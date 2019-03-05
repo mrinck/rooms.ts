@@ -1,11 +1,11 @@
 import { Component } from "../../core/api";
 
 export class ExitsComponent implements Component {
-    entityId: string;
+    entity: string;
     value: Exit[];
 
-    constructor(entityId: string, value: Exit[]) {
-        this.entityId = entityId;
+    constructor(entity: string, value: Exit[]) {
+        this.entity = entity;
         this.value = value;
     }
 

@@ -17,7 +17,7 @@ export interface ApplicationClass {
 
 
 export interface Component {
-    entityId: string;
+    entity: string;
     value: any;
 }
 

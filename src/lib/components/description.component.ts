@@ -1,15 +1,15 @@
 export class DescriptionComponent {
-    entityId: string;
+    entity: string;
     value: string;
 
-    constructor(entityId: string, value: string) {
-        this.entityId = entityId;
+    constructor(entity: string, value: string) {
+        this.entity = entity;
         this.value = value;
     }
 }
 
 
 export class DescriptionComponentData {
-    entityId: string;
+    entity: string;
     value: string;
 }

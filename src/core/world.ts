@@ -32,7 +32,7 @@ export class World implements Initializable {
             if (!datum.hasOwnProperty("#")) {
                 const componentClass = this.config.components.find(component => component.name === datum.type);
                 if (componentClass) {
-                    this.addComponent(new componentClass(datum.entityId, datum.value));
+                    this.addComponent(new componentClass(datum.entity, datum.value));
                 } else {
                     console.log("unknown component", datum.type);
                 }
@@ -52,7 +52,11 @@ export class World implements Initializable {
     }
 
     getComponent(entity: string, componentClass: ComponentClass): Component | undefined {
-        return this.components.find(component => component instanceof componentClass && component.entityId === entity);
+        return this.components.find(component => component instanceof componentClass && component.entity === entity);
+    }
+
+    getComponentsByClass(componentClass: ComponentClass): Component[] {
+        return this.components.filter(component => component instanceof componentClass);
     }
 
     /**
