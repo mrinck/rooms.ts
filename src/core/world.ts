@@ -1,21 +1,14 @@
 import { injectable } from "inversify";
 import { Initializable, Config } from "./api";
-import { of, Observable, Subject } from "rxjs";
-import { Entity, EntityClass, EntityDatum, EntityData } from "./entity";
-import { Player } from "./player";
-import { EntityFactory } from "./entityFactory";
+import { Component, ComponentClass } from "./api";
 
 @injectable()
 export class World implements Initializable {
-    entityData: EntityData;
-    entities: Entity[];
-
-    entityAdded: Observable<Entity>;
+    components: Component[];
 
     private _config: WorldConfig;
-    private entityAddedSubject: Subject<Entity>;
 
-    constructor(private entityFactory: EntityFactory) { }
+    constructor() { }
 
     get config() {
         return this._config;
@@ -23,13 +16,11 @@ export class World implements Initializable {
 
     async init(config: Config) {
         this._config = {
-            data: config.world && config.world.data || {},
-            entityClasses: config.entities
+            data: config.world && config.world.data || [],
+            components: config.components || []
         };
 
-        this.entities = [];
-        this.entityAddedSubject = new Subject();
-        this.entityAdded = this.entityAddedSubject.asObservable();
+        this.components = [];
 
         this.load();
 
@@ -37,57 +28,31 @@ export class World implements Initializable {
     }
 
     private load() {
-        const entityData = this.config.data as EntityDatum[];
-
-        for (const entityDatum of entityData) {
-            this.loadEntity(entityDatum);
+        for (const datum of this.config.data) {
+            if (!datum.hasOwnProperty("#")) {
+                const componentClass = this.config.components.find(component => component.name === datum.type);
+                if (componentClass) {
+                    this.addComponent(new componentClass(datum.entityId, datum.value));
+                } else {
+                    console.log("unknown component", datum.type);
+                }
+            } else {
+                console.log("#", datum["#"]);
+            }
         }
     }
 
-    private loadEntity(entityDatum: EntityDatum) {
-        const entity = this.entityFactory.create(entityDatum);
-
-        if (entity) {
-            this.addEntity(entity);
-        }
+    createEntity(): string {
+        return this.generateId();
     }
 
-    addEntity(entity: Entity) {
-        console.log("[World] adding", entity.type, "\"" + entity.name + "\"");
-
-        if (entity instanceof Player) {
-            entity.locationId = this.entities[0].id;
-        }
-
-        this.entities.push(entity);
-        this.entityAddedSubject.next(entity);
+    addComponent(component: Component) {
+        console.log("adding", component.constructor.name);
+        this.components.push(component);
     }
 
-    removeEntity(entity: Entity) {
-        console.log("[World] removing", entity.type, "\"" + entity.name + "\"");
-
-        const index = this.entities.indexOf(entity);
-        if (index) {
-            this.entities.splice(index, 1);
-        }
-    }
-
-    getEntity(id?: string): Entity | undefined {
-        if (id) {
-            return this.entities.find(entity => entity.id === id);
-        }
-    }
-
-    getChildren(parent: Entity): Entity[] {
-        return this.entities.filter(entity => entity.locationId === parent.id);
-    }
-
-    getSiblings(sibling: Entity): Entity[] {
-        if (sibling.locationId) {
-            return this.entities.filter(entity => entity.locationId === sibling.locationId).filter(entity => entity != sibling);
-        }
-
-        return [];
+    getComponent(entity: string, componentClass: ComponentClass): Component | undefined {
+        return this.components.find(component => component instanceof componentClass && component.entityId === entity);
     }
 
     /**
@@ -105,6 +70,6 @@ export class World implements Initializable {
 }
 
 export interface WorldConfig {
-    data: {};
-    entityClasses?: EntityClass[];
+    data: any[];
+    components: ComponentClass[];
 }

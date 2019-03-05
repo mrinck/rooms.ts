@@ -1,0 +1,83 @@
+[
+    {
+        "#": "1"
+    },
+    {
+        "type": "NameComponent",
+        "entityId": "1",
+        "value": "Room 1"
+    },
+    {
+        "type": "DescriptionComponent",
+        "entityId": "1",
+        "value": "This is room 1"
+    },
+    {
+        "type": "ExitsComponent",
+        "entityId": "1",
+        "value": [
+            {
+                "direction": "north",
+                "targetId": "3"
+            },
+            {
+                "direction": "south",
+                "targetId": "2"
+            }
+        ]
+    },
+    {
+        "#": "2"
+    },
+    {
+        "type": "NameComponent",
+        "entityId": "2",
+        "value": "Room 2"
+    },
+    {
+        "type": "DescriptionComponent",
+        "entityId": "2",
+        "value": "This is room 2"
+    },
+    {
+        "type": "ExitsComponent",
+        "entityId": "2",
+        "value": [
+            {
+                "direction": "north",
+                "targetId": "1"
+            },
+            {
+                "direction": "south",
+                "targetId": "3"
+            }
+        ]
+    },
+    {
+        "#": "3"
+    },
+    {
+        "type": "NameComponent",
+        "entityId": "3",
+        "value": "Room 3"
+    },
+    {
+        "type": "DescriptionComponent",
+        "entityId": "3",
+        "value": "This is room 3"
+    },
+    {
+        "type": "ExitsComponent",
+        "entityId": "3",
+        "value": [
+            {
+                "direction": "north",
+                "targetId": "2"
+            },
+            {
+                "direction": "south",
+                "targetId": "1"
+            }
+        ]
+    }
+]

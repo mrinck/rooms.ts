@@ -1,7 +1,4 @@
 import { NetworkConfig } from "./network";
-import { WorldConfig } from "./world";
-import { Player } from "./player";
-import { EntityClass } from "./entity";
 import { Action } from "./action";
 
 export interface ActionClass {
@@ -19,11 +16,22 @@ export interface ApplicationClass {
 }
 
 
+export interface Component {
+    entityId: string;
+    value: any;
+}
+
+
+export interface ComponentClass {
+    new(...params: any[]): Component;
+}
+
+
 export interface Config {
     network?: NetworkConfig;
-    world?: WorldConfig;
-    entities: EntityClass[];
-    systems: SystemClass[];
+    world?: { data: any };
+    components?: ComponentClass[];
+    systems?: SystemClass[];
 }
 
 
@@ -31,13 +39,6 @@ export interface Initializable {
     init(config: any): Promise<any>;
 }
 
-export interface Command {
-    execute(player: Player, args?: any): void;
-}
-
-export interface CommandClass {
-    new(...args: any[]): Command;
-}
 
 export interface SystemClass {
     new(...args: any[]): any;

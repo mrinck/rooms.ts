@@ -5,16 +5,16 @@ import { Action } from "./action";
 
 @injectable()
 export class Dispatcher implements Initializable {
-    action: Observable<Action>;
+    message: Observable<any>;
 
-    private actionSubject: Subject<Action>;
+    private messageSubject: Subject<any>;
 
     async init() {
-        this.actionSubject = new Subject();
-        this.action = this.actionSubject.asObservable();
+        this.messageSubject = new Subject();
+        this.message = this.messageSubject.asObservable();
     }
 
-    dispatch(action: Action) {
-        this.actionSubject.next(action);
+    dispatch(message: any) {
+        this.messageSubject.next(message);
     }
 }

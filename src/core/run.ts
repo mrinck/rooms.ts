@@ -5,7 +5,6 @@ import { Logger } from "./logger";
 import { Network } from "./network";
 import { World } from "./world";
 import { Clock } from "./clock";
-import { EntityFactory } from "./entityFactory";
 import { Dispatcher } from "./dispatcher";
 
 const container = new Container();
@@ -18,11 +17,10 @@ export function run(config: Config) {
             await init(Logger, config);
             await init(Dispatcher, config);
             await init(Clock, config);
-            await init(EntityFactory, config);
             await init(World, config);
             await init(Network, config.network || {});
 
-            for (const systemClass of config.systems) {
+            for (const systemClass of config.systems || []) {
                 bind(systemClass);
             }
 

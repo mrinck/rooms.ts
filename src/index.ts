@@ -1,11 +1,9 @@
 import { run } from "./core/run";
-import * as data from "./lib/data/world.json";
-import { Room } from "./lib/entities/room";
+import * as data from "./lib/data/world.1.json";
 import { Application } from "./core/api";
 import { Network } from "./core/network";
 import { World } from "./core/world";
 import { Client } from "./core/client";
-import { Player } from "./core/player";
 import { Dispatcher } from "./core/dispatcher";
 import { MoveAction } from "./lib/systems/move/move.action";
 import { MoveHandler } from "./lib/systems/move/move.handler";
@@ -13,14 +11,22 @@ import { LookHandler } from "./lib/systems/look/look.handler";
 import { QuitAction } from "./lib/systems/quit/quit.action";
 import { QuitHandler } from "./lib/systems/quit/quit.handler";
 import { LookAction } from "./lib/systems/look/look.action";
+import { ExitsComponent } from "./lib/components/exits.component";
+import { LocationComponent } from "./lib/components/location.component";
+import { Message } from "./core/message";
+import { NameComponent } from "./lib/components/name.component";
+import { DescriptionComponent } from "./lib/components/description.component";
 
 
 @run({
     world: {
-        data: data,
+        data: data as any[],
     },
-    entities: [
-        Room
+    components: [
+        DescriptionComponent,
+        ExitsComponent,
+        LocationComponent,
+        NameComponent
     ],
     systems: [
         LookHandler,
@@ -40,16 +46,16 @@ export class App implements Application {
     ) { }
 
     onInit() {
-        this.dispatcher.action.subscribe(action => {
-            switch (action.constructor) {
+        this.dispatcher.message.subscribe(message => {
+            switch (message.constructor) {
                 case LookAction:
-                    this.lookHandler.onLookAction(action as LookAction);
+                    this.lookHandler.onLookAction(message as LookAction);
                     break;
                 case MoveAction:
-                    this.movementHandler.onMoveAction(action as MoveAction);
+                    this.movementHandler.onMoveAction(message as MoveAction);
                     break;
                 case QuitAction:
-                    this.quitHandler.onQuitAction(action as QuitAction);
+                    this.quitHandler.onQuitAction(message as QuitAction);
                     break;
             }
         });
@@ -63,19 +69,29 @@ export class App implements Application {
         const name = await client.read("Name");
         client.write("Hi " + name);
 
-        const player = new Player(this.world);
-        player.client = client;
-        player.name = name;
-
-        this.world.addEntity(player);
-        this.dispatcher.dispatch(new LookAction(player));
-
-        this.readCommand(player);
+        this.addPlayer(client, name);        
     }
 
-    async readCommand(player: Player) {
+    async addPlayer(client: Client, name: string) {
+        const player = this.world.createEntity();
+
+        this.world.addComponent(new NameComponent(player, name));
+        this.world.addComponent(new LocationComponent(player, "1"));
+
+        this.dispatcher.message.subscribe(message => {
+            if (message instanceof Message && message.entityId === player) {
+                client.write(message.message);
+            }
+        });
+
+        this.dispatcher.dispatch(new LookAction(player));
+
+        this.readCommand(client, player);
+    }
+
+    async readCommand(client: Client, player: string) {
         try {
-            let input = await player.client.read(">");
+            let input = await client.read(">");
             input = input.trim();
 
             switch (input) {
@@ -110,12 +126,12 @@ export class App implements Application {
 
                 default:
                     if (input.length > 0) {
-                        player.notify("Unknown command: " + input);
+                        client.write("Unknown command: " + input);
                     }
                     break;
             }
 
-            this.readCommand(player);
+            this.readCommand(client, player);
         } catch (e) {
             // NOOP
         }
