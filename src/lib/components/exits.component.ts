@@ -1,10 +1,11 @@
-import { Component } from "../../core/api";
+import { Component } from "../../core/component";
 
-export class ExitsComponent implements Component {
+export class ExitsComponent extends Component {
     entity: string;
     value: Exit[];
 
     constructor(entity: string, value: Exit[]) {
+        super();
         this.entity = entity;
         this.value = value;
     }

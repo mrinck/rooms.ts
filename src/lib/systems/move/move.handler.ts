@@ -2,6 +2,10 @@ import { injectable } from "inversify";
 import { World } from "../../../core/world";
 import { Dispatcher } from "../../../core/dispatcher";
 import { MoveAction } from "./move.action";
+import { LocationComponent } from "../../components/location.component";
+import { ExitsComponent } from "../../components/exits.component";
+import { LookAction } from "../look/look.action";
+import { Message } from "../../../core/message";
 
 @injectable()
 export class MoveHandler {
@@ -12,48 +16,26 @@ export class MoveHandler {
     ) { }
 
     onMoveAction(action: MoveAction) {
-    //     const location = this.world.getEntity(action.subject.locationId);
+        const actor = action.actor;
 
-    //     if (location && location instanceof Room) {
-    //         const targetId = location.getExitTargetIdInDirection(action.direction);
-    //         const target = this.world.getEntity(targetId);
+        const actorLocationComponent = this.world.getComponent(actor, LocationComponent);
+        
+        if (actorLocationComponent) {
+            const actorLocation = actorLocationComponent.value;
+            const actorLocationExitsComponent = this.world.getComponent(actorLocation, ExitsComponent);
 
-    //         if (target) {
-    //             for (const child of this.world.getChildren(location)) {
-    //                 this.notifyMoveStart(child, action.subject, action.direction);
-    //             }
+            if (actorLocationExitsComponent) {
+                const target = actorLocationExitsComponent.getExitTargetIdInDirection(action.direction);
 
-    //             action.subject.locationId = targetId;
+                if (target) {
+                    actorLocationComponent.value = target;
 
-    //             let direction = "somewhere";
-
-    //             if (target instanceof Room) {
-    //                 direction = target.getExitDirectionOfTargetId(location.id) || "somewhere";
-    //             }
-
-    //             for (const child of this.world.getChildren(target)) {
-    //                 this.notifyMoveEnd(child, action.subject, direction);
-    //             }
-
-    //             const lookAction = new LookAction(action.subject);
-    //             this.dispatcher.dispatch(lookAction);
-    //         } else {
-    //             action.subject.notify("You can't go in this direction.");
-    //         }
-    //     }
+                    const lookAction = new LookAction(actor);
+                    this.dispatcher.dispatch(lookAction);
+                } else {
+                    this.dispatcher.dispatch(new Message(actor, "You can't go in this direction."));
+                }
+            }
+        }
     }
-
-    // private notifyMoveStart(receiver: Entity, actor: Entity, direction: string) {
-
-    //     if (receiver !== actor) {
-    //         receiver.notify(actor.name + " leaves to " + direction + ".");
-    //     }
-    // }
-
-    // private notifyMoveEnd(receiver: Entity, actor: Entity, direction: string) {
-
-    //     if (receiver !== actor) {
-    //         receiver.notify(actor.name + " arrives from " + direction + ".");
-    //     }
-    // }
 }

@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import { Initializable, Config } from "./api";
-import { Component, ComponentClass } from "./api";
+import { ComponentClass } from "./api";
+import { Component } from "./component";
 
 @injectable()
 export class World implements Initializable {
@@ -32,7 +33,7 @@ export class World implements Initializable {
             if (!datum.hasOwnProperty("#")) {
                 const componentClass = this.config.components.find(component => component.name === datum.type);
                 if (componentClass) {
-                    this.addComponent(new componentClass(datum.entity, datum.value));
+                    this.addComponent(new componentClass(datum.entity, datum.value, this));
                 } else {
                     console.log("unknown component", datum.type);
                 }
@@ -51,8 +52,8 @@ export class World implements Initializable {
         this.components.push(component);
     }
 
-    getComponent(entity: string, componentClass: ComponentClass): Component | undefined {
-        return this.components.find(component => component instanceof componentClass && component.entity === entity);
+    getComponent<T extends Component>(entity: string, componentType: ComponentType<T>): T | undefined {
+        return this.components.find(component => component instanceof componentType && component.entity === entity) as T;
     }
 
     getComponentsByClass(componentClass: ComponentClass): Component[] {
@@ -77,3 +78,5 @@ export interface WorldConfig {
     data: any[];
     components: ComponentClass[];
 }
+
+interface ComponentType<T extends Component> { new(...args: any[]): T }

@@ -5,6 +5,8 @@ import { Dispatcher } from "../../../core/dispatcher";
 import { Message } from "../../../core/message";
 import { LocationComponent } from "../../components/location.component";
 import { DescriptionComponent } from "../../components/description.component";
+import { NameComponent } from "../../components/name.component";
+import { ExitsComponent } from "../../components/exits.component";
 
 @injectable()
 export class LookHandler {
@@ -22,6 +24,7 @@ export class LookHandler {
 
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
+
             const actorLocationDescriptionComponent = this.world.getComponent(actorLocation, DescriptionComponent);
 
             if (actorLocationDescriptionComponent) {
@@ -29,30 +32,25 @@ export class LookHandler {
                 output.push(actorLocationDescription + "\n");
             }
 
-            
+            const actorLocationChildren = actorLocationComponent.getChildren(this.world);
+
+            for (const content of actorLocationChildren) {
+                if (content != actor) {
+                    const contentNameComponent = this.world.getComponent(content, NameComponent);
+                    if (contentNameComponent) {
+                        output.push(contentNameComponent.value + " is here. \n");
+                    }
+                }
+            }
+
+            const actorLocationExitsComponent = this.world.getComponent(actorLocation, ExitsComponent);
+
+            if (actorLocationExitsComponent) {
+                output.push("Exits: " + actorLocationExitsComponent.getExitDirections().join(', ') + "\n");
+            }
+        } else {
+            output.push("Whiteness");
         }
-
-
-
-        // if (playerLocation) {
-
-        //     // output contents
-        //     const locationContents = this.world.getChildren(playerLocation);
-        //     if (locationContents.length > 1) {
-        //         for (const content of locationContents) {
-        //             if (content != action.subject) {
-        //                 output.push(content.name! + " is here. \n");
-        //             }
-        //         }
-        //     }
-
-        //     // output exits
-        //     if (playerLocation instanceof Room) {
-        //         output.push("Exits: " + playerLocation.getExitDirections().join(', ') + "\n");
-        //     }
-        // } else {
-        //     output.push('Whiteness');
-        // }
 
         this.dispatcher.dispatch(new Message(action.actor, output.join('')));
     }

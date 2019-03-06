@@ -1,5 +1,6 @@
 import { NetworkConfig } from "./network";
 import { Action } from "./action";
+import { Component } from "./component";
 
 export interface ActionClass {
     new(...params: any[]): Action;
@@ -13,12 +14,6 @@ export interface Application {
 
 export interface ApplicationClass {
     new(...params: any[]): Application;
-}
-
-
-export interface Component {
-    entity: string;
-    value: any;
 }
 
 

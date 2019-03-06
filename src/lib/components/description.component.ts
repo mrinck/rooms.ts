@@ -1,8 +1,11 @@
-export class DescriptionComponent {
+import { Component } from "../../core/component";
+
+export class DescriptionComponent extends Component {
     entity: string;
     value: string;
 
     constructor(entity: string, value: string) {
+        super();
         this.entity = entity;
         this.value = value;
     }
