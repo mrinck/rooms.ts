@@ -9,7 +9,7 @@ import { NameComponent } from "../../components/name.component";
 import { ExitsComponent } from "../../components/exits.component";
 
 @injectable()
-export class LookHandler {
+export class LookSystem {
 
     constructor(
         private world: World,

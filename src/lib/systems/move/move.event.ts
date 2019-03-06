@@ -1,14 +1,13 @@
-import { Entity } from "../../../core/entity";
 import { MoveAction } from "./move.action";
 
 export class MoveBeginEvent {
-    actor: Entity;
+    actor: string;
     direction: string;
     originalAction: MoveAction;
 }
 
 export class MoveEndEvent {
-    actor: Entity;
-    location: Entity;
+    actor: string;
+    location: string;
     originalAction: MoveAction;
 }

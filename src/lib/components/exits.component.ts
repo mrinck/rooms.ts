@@ -1,13 +1,10 @@
 import { Component } from "../../core/component";
 
 export class ExitsComponent extends Component {
-    entity: string;
     value: Exit[];
 
     constructor(entity: string, value: Exit[]) {
-        super();
-        this.entity = entity;
-        this.value = value;
+        super(entity, value);
     }
 
     addExit(exit: Exit) {
@@ -46,10 +43,4 @@ export class ExitsComponent extends Component {
 export interface Exit {
     direction: string;
     targetId: string;
-}
-
-
-export interface ExitsComponentData {
-    entityId: string;
-    value: Exit[];
 }

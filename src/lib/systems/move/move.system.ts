@@ -8,7 +8,7 @@ import { LookAction } from "../look/look.action";
 import { Message } from "../../../core/message";
 
 @injectable()
-export class MoveHandler {
+export class MoveSystem {
 
     constructor(
         private world: World,

@@ -2,13 +2,10 @@ import { World } from "../../core/world";
 import { Component } from "../../core/component";
 
 export class LocationComponent extends Component {
-    entity: string;
     value: string;
 
     constructor(entity: string, value: string) {
-        super();
-        this.entity = entity;
-        this.value = value;
+        super(entity, value);
     }
 
     getChildren(world: World): string[] {
@@ -20,10 +17,4 @@ export class LocationComponent extends Component {
         }
         return children;
     }
-}
-
-
-export class LocationComponentData {
-    entity: string;
-    value: string;
 }

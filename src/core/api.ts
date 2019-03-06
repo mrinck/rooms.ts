@@ -1,10 +1,6 @@
 import { NetworkConfig } from "./network";
-import { Action } from "./action";
-import { Component } from "./component";
-
-export interface ActionClass {
-    new(...params: any[]): Action;
-}
+import { ComponentClass } from "./component";
+import { WorldData } from "./world";
 
 
 export interface Application {
@@ -12,21 +8,11 @@ export interface Application {
 }
 
 
-export interface ApplicationClass {
-    new(...params: any[]): Application;
-}
-
-
-export interface ComponentClass {
-    new(...params: any[]): Component;
-}
-
-
 export interface Config {
     network?: NetworkConfig;
-    world?: { data: any };
-    components?: ComponentClass[];
-    systems?: SystemClass[];
+    world: WorldData;
+    components: ComponentClass[];
+    systems: SystemClass[];
 }
 
 

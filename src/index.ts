@@ -1,27 +1,26 @@
 import { run } from "./core/run";
-import * as data from "./lib/data/world.1.json";
+import * as data from "./lib/data/world.json";
 import { Application } from "./core/api";
 import { Network } from "./core/network";
 import { World } from "./core/world";
 import { Client } from "./core/client";
 import { Dispatcher } from "./core/dispatcher";
 import { MoveAction } from "./lib/systems/move/move.action";
-import { MoveHandler } from "./lib/systems/move/move.handler";
-import { LookHandler } from "./lib/systems/look/look.handler";
+import { MoveSystem } from "./lib/systems/move/move.system";
+import { LookSystem } from "./lib/systems/look/look.system";
 import { QuitAction } from "./lib/systems/quit/quit.action";
-import { QuitHandler } from "./lib/systems/quit/quit.handler";
+import { QuitSystem } from "./lib/systems/quit/quit.system";
 import { LookAction } from "./lib/systems/look/look.action";
 import { ExitsComponent } from "./lib/components/exits.component";
 import { LocationComponent } from "./lib/components/location.component";
 import { Message } from "./core/message";
 import { NameComponent } from "./lib/components/name.component";
 import { DescriptionComponent } from "./lib/components/description.component";
+import { filter } from "rxjs/operators";
 
 
 @run({
-    world: {
-        data: data as any[],
-    },
+    world: data,
     components: [
         DescriptionComponent,
         ExitsComponent,
@@ -29,9 +28,9 @@ import { DescriptionComponent } from "./lib/components/description.component";
         NameComponent
     ],
     systems: [
-        LookHandler,
-        MoveHandler,
-        QuitHandler
+        LookSystem,
+        MoveSystem,
+        QuitSystem
     ]
 })
 export class App implements Application {
@@ -40,9 +39,9 @@ export class App implements Application {
         private network: Network,
         private world: World,
         private dispatcher: Dispatcher,
-        private movementHandler: MoveHandler,
-        private lookHandler: LookHandler,
-        private quitHandler: QuitHandler
+        private movementHandler: MoveSystem,
+        private lookHandler: LookSystem,
+        private quitHandler: QuitSystem
     ) { }
 
     onInit() {
@@ -69,19 +68,17 @@ export class App implements Application {
         const name = await client.read("Name");
         client.write("Hi " + name);
 
-        this.addPlayer(client, name);        
+        this.createPlayer(client, name);        
     }
 
-    async addPlayer(client: Client, name: string) {
+    async createPlayer(client: Client, name: string) {
         const player = this.world.createEntity();
 
         this.world.addComponent(new NameComponent(player, name));
         this.world.addComponent(new LocationComponent(player, "1"));
 
-        this.dispatcher.message.subscribe(message => {
-            if (message instanceof Message && message.entityId === player) {
-                client.write(message.message);
-            }
+        this.dispatcher.message.pipe(filter(message => message instanceof Message && message.entityId === player)).subscribe(message => {
+            client.write(message.message);
         });
 
         this.dispatcher.dispatch(new LookAction(player));

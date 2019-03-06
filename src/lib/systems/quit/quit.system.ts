@@ -3,7 +3,7 @@ import { World } from "../../../core/world";
 import { QuitAction } from "./quit.action";
 
 @injectable()
-export class QuitHandler {
+export class QuitSystem {
 
     constructor(private world: World) {}
 

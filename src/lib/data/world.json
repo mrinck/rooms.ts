@@ -1,103 +1,76 @@
-[
-    {
-        "id": "1",
-        "type": "Room",
-        "name": "Room 1",
-        "description": "This is Room #1",
-        "exits": [
-            {
-                "direction": "north",
-                "targetId": "6"
-            },
-            {
-                "direction": "south",
-                "targetId": "2"
-            }
-        ]
-    },
-    {
-        "id": "2",
-        "type": "Room",
-        "name": "Room 2",
-        "description": "This is Room #2",
-        "exits": [
-            {
-                "direction": "north",
-                "targetId": "1"
-            },
-            {
-
-                "direction": "south",
-                "targetId": "3"
-            }
-        ]
-    },
-    {
-        "id": "3",
-        "type": "Room",
-        "name": "Room 3",
-        "description": "This is Room #3",
-        "exits": [
-            {
-                "direction": "north",
-                "targetId": "2"
-            },
-            {
-
-                "direction": "south",
-                "targetId": "4"
-            }
-        ]
-    },
-    {
-        "id": "4",
-        "type": "Room",
-        "name": "Room 4",
-        "description": "This is Room #4",
-        "exits": [
-            {
-                "direction": "north",
-                "targetId": "3"
-            },
-            {
-
-                "direction": "south",
-                "targetId": "5"
-            }
-        ]
-    },
-    {
-        "id": "5",
-        "type": "Room",
-        "name": "Room 5",
-        "description": "This is Room #5",
-        "exits": [
-            {
-                "direction": "north",
-                "targetId": "4"
-            },
-            {
-
-                "direction": "south",
-                "targetId": "6"
-            }
-        ]
-    },
-    {
-        "id": "6",
-        "type": "Room",
-        "name": "Room 6",
-        "description": "This is Room #6",
-        "exits": [
-            {
-                "direction": "north",
-                "targetId": "5"
-            },
-            {
-
-                "direction": "south",
-                "targetId": "1"
-            }
-        ]
-    }
-]
+{
+    "components": [
+        {
+            "type": "NameComponent",
+            "entity": "1",
+            "value": "Room 1"
+        },
+        {
+            "type": "DescriptionComponent",
+            "entity": "1",
+            "value": "This is room 1"
+        },
+        {
+            "type": "ExitsComponent",
+            "entity": "1",
+            "value": [
+                {
+                    "direction": "north",
+                    "targetId": "3"
+                },
+                {
+                    "direction": "south",
+                    "targetId": "2"
+                }
+            ]
+        },
+        {
+            "type": "NameComponent",
+            "entity": "2",
+            "value": "Room 2"
+        },
+        {
+            "type": "DescriptionComponent",
+            "entity": "2",
+            "value": "This is room 2"
+        },
+        {
+            "type": "ExitsComponent",
+            "entity": "2",
+            "value": [
+                {
+                    "direction": "north",
+                    "targetId": "1"
+                },
+                {
+                    "direction": "south",
+                    "targetId": "3"
+                }
+            ]
+        },
+        {
+            "type": "NameComponent",
+            "entity": "3",
+            "value": "Room 3"
+        },
+        {
+            "type": "DescriptionComponent",
+            "entity": "3",
+            "value": "This is room 3"
+        },
+        {
+            "type": "ExitsComponent",
+            "entity": "3",
+            "value": [
+                {
+                    "direction": "north",
+                    "targetId": "2"
+                },
+                {
+                    "direction": "south",
+                    "targetId": "1"
+                }
+            ]
+        }
+    ]
+}

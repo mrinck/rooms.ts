@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import { Initializable, Config } from "./api";
-import { ComponentClass } from "./api";
-import { Component } from "./component";
+import { Component, ComponentType, ComponentClass, ComponentData } from "./component";
 
 @injectable()
 export class World implements Initializable {
@@ -17,7 +16,7 @@ export class World implements Initializable {
 
     async init(config: Config) {
         this._config = {
-            data: config.world && config.world.data || [],
+            data: config.world,
             components: config.components || []
         };
 
@@ -29,16 +28,12 @@ export class World implements Initializable {
     }
 
     private load() {
-        for (const datum of this.config.data) {
-            if (!datum.hasOwnProperty("#")) {
-                const componentClass = this.config.components.find(component => component.name === datum.type);
-                if (componentClass) {
-                    this.addComponent(new componentClass(datum.entity, datum.value, this));
-                } else {
-                    console.log("unknown component", datum.type);
-                }
+        for (const datum of this.config.data.components) {
+            const componentClass = this.config.components.find(component => component.name === datum.type);
+            if (componentClass) {
+                this.addComponent(new componentClass(datum.entity, datum.value, this));
             } else {
-                console.log("#", datum["#"]);
+                console.log("unknown component", datum.type);
             }
         }
     }
@@ -48,16 +43,16 @@ export class World implements Initializable {
     }
 
     addComponent(component: Component) {
-        console.log("adding", component.constructor.name);
+        console.log("adding", component.type, ":" ,component.value);
         this.components.push(component);
     }
 
-    getComponent<T extends Component>(entity: string, componentType: ComponentType<T>): T | undefined {
-        return this.components.find(component => component instanceof componentType && component.entity === entity) as T;
+    getComponent<T extends Component>(entity: string, type: ComponentType<T>): T | undefined {
+        return this.components.find(component => component instanceof type && component.entity === entity) as T;
     }
 
-    getComponentsByClass(componentClass: ComponentClass): Component[] {
-        return this.components.filter(component => component instanceof componentClass);
+    getComponentsByClass<T extends Component>(type: ComponentType<T>): T[] {
+        return this.components.filter(component => component instanceof type) as T[];
     }
 
     /**
@@ -75,8 +70,10 @@ export class World implements Initializable {
 }
 
 export interface WorldConfig {
-    data: any[];
+    data: WorldData;
     components: ComponentClass[];
 }
 
-interface ComponentType<T extends Component> { new(...args: any[]): T }
+export interface WorldData {
+    components: ComponentData[]
+}

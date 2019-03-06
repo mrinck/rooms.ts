@@ -16,3 +16,7 @@ export abstract class Action {
     }
 
 }
+
+export interface ActionClass {
+    new(...params: any[]): Action;
+}
