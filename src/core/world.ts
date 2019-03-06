@@ -43,7 +43,7 @@ export class World implements Initializable {
     }
 
     addComponent(component: Component) {
-        console.log("adding", component.type, ":" ,component.value);
+        console.log("[World] adding", component.type, "@" ,component.entity);
         this.components.push(component);
     }
 
