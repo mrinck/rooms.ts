@@ -6,6 +6,7 @@ import { Network } from "./network";
 import { World } from "./world";
 import { Clock } from "./clock";
 import { Dispatcher } from "./dispatcher";
+import { SessionManager } from "./sessionManager";
 
 const container = new Container();
 
@@ -18,6 +19,7 @@ export function run(config: Config) {
             await init(Dispatcher, config);
             await init(Clock, config);
             await init(World, config);
+            await init(SessionManager, config);
             await init(Network, config.network || {});
 
             for (const systemClass of config.systems || []) {

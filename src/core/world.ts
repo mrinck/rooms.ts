@@ -55,6 +55,16 @@ export class World implements Initializable {
         return this.components.filter(component => component instanceof type) as T[];
     }
 
+    removeComponents(entity: string) {
+        let i = this.components.length;
+        while (i--) {
+            if (this.components[i].entity === entity) {
+                console.log("[World] removing", this.components[i].type, "@", entity);
+                this.components.splice(i, 1);
+            }
+        }
+    }
+
     /**
      * Generate a 16 digit base62 id.
      */

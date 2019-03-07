@@ -1,25 +1,17 @@
 import { injectable } from "inversify";
-import { World } from "../../../core/world";
 import { QuitAction } from "./quit.action";
+import { SessionManager } from "../../../core/sessionManager";
 
 @injectable()
 export class QuitSystem {
 
-    constructor(private world: World) {}
+    constructor(private sessionManager: SessionManager) {}
 
     onQuitAction(action: QuitAction) {
-    //     const locationId = action.player.locationId;
-    //     const location = this.world.getEntity(locationId);
+        const session = this.sessionManager.getSessionForPlayer(action.actor);
 
-    //     if (location) {
-    //         for (const observer of this.world.getChildren(location)) {
-    //             if (observer !== action.player) {
-    //                 observer.notify(action.player.name + " disappears.");
-    //             }
-    //         }
-    //     }
-
-    //     this.world.removeEntity(action.player);
-    //     action.player.client.disconnect();
+        if (session) {
+            session.destroy();
+        }
     }
 }

@@ -16,7 +16,10 @@ import { LocationComponent } from "./lib/components/location.component";
 import { Message } from "./core/message";
 import { NameComponent } from "./lib/components/name.component";
 import { DescriptionComponent } from "./lib/components/description.component";
-import { filter } from "rxjs/operators";
+import { filter, first } from "rxjs/operators";
+import { SessionManager, Session } from "./core/sessionManager";
+import { PlayerComponent } from "./lib/components/player.component";
+import { Subscription } from "rxjs";
 
 
 @run({
@@ -25,7 +28,8 @@ import { filter } from "rxjs/operators";
         DescriptionComponent,
         ExitsComponent,
         LocationComponent,
-        NameComponent
+        NameComponent,
+        PlayerComponent
     ],
     systems: [
         LookSystem,
@@ -41,7 +45,8 @@ export class App implements Application {
         private dispatcher: Dispatcher,
         private movementHandler: MoveSystem,
         private lookHandler: LookSystem,
-        private quitHandler: QuitSystem
+        private quitHandler: QuitSystem,
+        private sessionManager: SessionManager
     ) { }
 
     onInit() {
@@ -65,72 +70,103 @@ export class App implements Application {
     }
 
     async readName(client: Client) {
-        const name = await client.read("Name");
+        const name = await client.readOnce("Name");
         client.write("Hi " + name);
+        
+        const currentPlayersComponents = this.world.getComponentsByClass(PlayerComponent);
+        const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
 
-        this.createPlayer(client, name);        
+        if(currentPlayerComponent) {
+            // ALREADY IN WORLD
+            const currentPlayer = currentPlayerComponent.entity;
+            const currentPlayerSession = this.sessionManager.getSessionForPlayer(currentPlayer);
+
+            if (currentPlayerSession) {
+                if(currentPlayerSession.client.isAlive()) {
+                    // already coonnected
+                    client.write("Already connected.");
+                    client.disconnect();
+                } else {
+                    // reconnect
+                    client.write("Reconnected.");
+                    currentPlayerSession.get<Subscription>("messageSubscription").unsubscribe();
+                    currentPlayerSession.get<Subscription>("inputSubscription").unsubscribe();
+                    currentPlayerSession.client = client;
+
+                    this.initSession(currentPlayerSession);
+                }
+            }
+        } else {
+            this.createPlayer(client, name);
+        }
     }
 
     async createPlayer(client: Client, name: string) {
         const player = this.world.createEntity();
-
+        this.world.addComponent(new PlayerComponent(player, name));
         this.world.addComponent(new NameComponent(player, name));
         this.world.addComponent(new LocationComponent(player, "1"));
 
-        this.dispatcher.message.pipe(filter(message => message instanceof Message && message.entityId === player)).subscribe(message => {
-            client.write(message.message);
+        const session = this.sessionManager.createSession(player, client);
+
+        session.destroys.pipe(first()).subscribe(() => {
+            session.get<Subscription>("messageSubscription").unsubscribe();
+            session.get<Subscription>("inputSubscription").unsubscribe();
+            session.client.disconnect();
+            this.world.removeComponents(session.player);
         });
 
-        this.dispatcher.dispatch(new LookAction(player));
+        this.initSession(session);
 
-        this.readCommand(client, player);
+        this.dispatcher.dispatch(new LookAction(player));
     }
 
-    async readCommand(client: Client, player: string) {
-        try {
-            let input = await client.read(">");
+    async initSession(session: Session) {
+
+        session.data["messageSubscription"] = this.dispatcher.message.pipe(filter(message => message instanceof Message && message.entityId === session.player)).subscribe(message => {
+            session.client.write(message.message);
+        });
+
+        session.data["inputSubscription"] = session.client.messages.subscribe(input => {
+            console.log("receiving input", input);
             input = input.trim();
 
             switch (input) {
                 case "quit":
-                    this.dispatcher.dispatch(new QuitAction(player));
+                    this.dispatcher.dispatch(new QuitAction(session.player));
                     break;
 
                 case "l":
                 case "look":
-                    this.dispatcher.dispatch(new LookAction(player));
+                    this.dispatcher.dispatch(new LookAction(session.player));
                     break;
 
                 case "n":
                 case "north":
-                    this.dispatcher.dispatch(new MoveAction(player, "north"));
+                    this.dispatcher.dispatch(new MoveAction(session.player, "north"));
                     break;
 
                 case "e":
                 case "east":
-                    this.dispatcher.dispatch(new MoveAction(player, "east"));
+                    this.dispatcher.dispatch(new MoveAction(session.player, "east"));
                     break;
 
                 case "s":
                 case "south":
-                    this.dispatcher.dispatch(new MoveAction(player, "south"));
+                    this.dispatcher.dispatch(new MoveAction(session.player, "south"));
                     break;
 
                 case "w":
                 case "west":
-                    this.dispatcher.dispatch(new MoveAction(player, "west"));
+                    this.dispatcher.dispatch(new MoveAction(session.player, "west"));
                     break;
 
                 default:
                     if (input.length > 0) {
-                        client.write("Unknown command: " + input);
+                        session.client.write("Unknown command: " + input);
                     }
                     break;
             }
-
-            this.readCommand(client, player);
-        } catch (e) {
-            // NOOP
-        }
+        });
     }
 }

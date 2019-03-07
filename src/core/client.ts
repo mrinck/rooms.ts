@@ -1,5 +1,6 @@
 import * as WebSocket from "ws";
 import { Observable, Subject } from "rxjs";
+import { first } from "rxjs/operators";
 
 export class Client {
     messages: Observable<string>;
@@ -34,15 +35,21 @@ export class Client {
         });
     }
 
-    read(message?: string): Promise<string> {
+    read(message?: string): Observable<string> {
         if (message) {
             this.write(message);
         }
 
-        return new Promise(resolve => {
-            const reader = (input: string) => resolve(input);
+        return new Observable<string>(subscriber => {
+            const reader = (input: string) => {
+                subscriber.next(input);
+            }
             this.readers.push(reader);
         });
+    }
+
+    readOnce(message?:string): Promise<string> {
+        return this.read(message).pipe(first()).toPromise();
     }
 
     write(message: string) {
