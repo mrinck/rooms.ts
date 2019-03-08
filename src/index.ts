@@ -71,8 +71,7 @@ export class App implements Application {
 
     async readName(client: Client) {
         const name = await client.readOnce("Name");
-        client.write("Hi " + name);
-        
+                
         const currentPlayersComponents = this.world.getComponentsByClass(PlayerComponent);
         const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
 
@@ -102,6 +101,8 @@ export class App implements Application {
     }
 
     async createPlayer(client: Client, name: string) {
+        client.write("Hi " + name);
+
         const player = this.world.createEntity();
         this.world.addComponent(new PlayerComponent(player, name));
         this.world.addComponent(new NameComponent(player, name));
@@ -128,7 +129,6 @@ export class App implements Application {
         });
 
         session.data["inputSubscription"] = session.client.messages.subscribe(input => {
-            console.log("receiving input", input);
             input = input.trim();
 
             switch (input) {
