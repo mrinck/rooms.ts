@@ -1,7 +1,7 @@
 import { app } from "./core/app";
 import * as data from "./lib/data/world.json";
 import { Network } from "./core/network";
-import { EntityManager } from "./core/entityManager";
+import { ComponentManager } from "./core/componentManager";
 import { Client } from "./core/client";
 import { EventManager } from "./core/eventManager";
 import { MoveAction } from "./lib/systems/move/move.action";
@@ -19,7 +19,6 @@ import { filter, first } from "rxjs/operators";
 import { SessionManager, Session } from "./core/sessionManager";
 import { PlayerComponent } from "./lib/components/player.component";
 import { Subscription } from "rxjs";
-
 
 @app({
     world: data,
@@ -40,7 +39,7 @@ export class App {
 
     constructor(
         private network: Network,
-        private entityManager: EntityManager,
+        private componentManager: ComponentManager,
         private eventManager: EventManager,
         private sessionManager: SessionManager
     ) { }
@@ -54,7 +53,7 @@ export class App {
     async readName(client: Client) {
         const name = await client.readOnce("Name");
 
-        const currentPlayersComponents = this.entityManager.getComponentsByClass(PlayerComponent);
+        const currentPlayersComponents = this.componentManager.getComponentsByClass(PlayerComponent);
         const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
 
         if (currentPlayerComponent) {
@@ -85,10 +84,10 @@ export class App {
     createPlayer(client: Client, name: string) {
         client.write("Hi " + name);
 
-        const player = this.entityManager.createEntity();
-        this.entityManager.addComponent(new PlayerComponent(player, name));
-        this.entityManager.addComponent(new NameComponent(player, name));
-        this.entityManager.addComponent(new LocationComponent(player, "1"));
+        const player = this.componentManager.createEntity();
+        this.componentManager.addComponent(new PlayerComponent(player, name));
+        this.componentManager.addComponent(new NameComponent(player, name));
+        this.componentManager.addComponent(new LocationComponent(player, "1"));
 
         const session = this.sessionManager.createSession(player, client);
 
@@ -96,7 +95,7 @@ export class App {
             session.get<Subscription>("messageSubscription").unsubscribe();
             session.get<Subscription>("inputSubscription").unsubscribe();
             session.client.disconnect();
-            this.entityManager.removeComponents(session.player);
+            this.componentManager.removeComponents(session.player);
         });
 
         this.initSession(session);

@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { EntityManager } from "../../../core/entityManager";
+import { ComponentManager } from "../../../core/componentManager";
 import { LookAction } from "./look.action";
 import { EventManager } from "../../../core/eventManager";
 import { Message } from "../../../core/message";
@@ -9,13 +9,17 @@ import { NameComponent } from "../../components/name.component";
 import { ExitsComponent } from "../../components/exits.component";
 import { filter } from "rxjs/operators";
 import { OnInit } from "../../../core/api";
+import { MoveSystem } from "../move/move.system";
+import { system } from "../../../core/system";
 
 @injectable()
+@system()
 export class LookSystem implements OnInit {
 
     constructor(
-        private entityManager: EntityManager,
-        private eventManager: EventManager
+        private componentManager: ComponentManager,
+        private eventManager: EventManager,
+        private moveSystem: MoveSystem
     ) { }
 
     onInit() {
@@ -28,30 +32,30 @@ export class LookSystem implements OnInit {
         const output: string[] = [];
         const actor = action.actor;
 
-        const actorLocationComponent = this.entityManager.getComponent(actor, LocationComponent);
+        const actorLocationComponent = this.componentManager.getComponent(actor, LocationComponent);
 
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
 
-            const actorLocationDescriptionComponent = this.entityManager.getComponent(actorLocation, DescriptionComponent);
+            const actorLocationDescriptionComponent = this.componentManager.getComponent(actorLocation, DescriptionComponent);
 
             if (actorLocationDescriptionComponent) {
                 const actorLocationDescription = actorLocationDescriptionComponent.value;
                 output.push(actorLocationDescription + "\n");
             }
 
-            const actorLocationChildren = actorLocationComponent.getChildren(this.entityManager);
+            const actorLocationChildren = this.moveSystem.getEntityChildren(actorLocation);
 
             for (const content of actorLocationChildren) {
                 if (content != actor) {
-                    const contentNameComponent = this.entityManager.getComponent(content, NameComponent);
+                    const contentNameComponent = this.componentManager.getComponent(content, NameComponent);
                     if (contentNameComponent) {
                         output.push(contentNameComponent.value + " is here. \n");
                     }
                 }
             }
 
-            const actorLocationExitsComponent = this.entityManager.getComponent(actorLocation, ExitsComponent);
+            const actorLocationExitsComponent = this.componentManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
                 output.push("Exits: " + actorLocationExitsComponent.getExitDirections().join(', ') + "\n");

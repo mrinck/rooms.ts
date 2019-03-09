@@ -1,6 +1,6 @@
 import { NetworkConfig } from "./network";
 import { ComponentClass } from "./component";
-import { WorldData } from "./entityManager";
+import { WorldData } from "./componentManager";
 
 export interface Config {
     network?: NetworkConfig;
@@ -12,6 +12,7 @@ export interface Config {
 export type Entity = string;
 
 export interface SystemClass {
+    [key: string]: any;
     new(...args: any[]): any;
 }
 

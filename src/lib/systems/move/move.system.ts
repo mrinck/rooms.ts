@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { EntityManager } from "../../../core/entityManager";
+import { ComponentManager } from "../../../core/componentManager";
 import { EventManager } from "../../../core/eventManager";
 import { MoveAction } from "./move.action";
 import { LocationComponent } from "../../components/location.component";
@@ -7,13 +7,13 @@ import { ExitsComponent } from "../../components/exits.component";
 import { LookAction } from "../look/look.action";
 import { Message } from "../../../core/message";
 import { filter } from "rxjs/operators";
-import { OnInit } from "../../../core/api";
+import { OnInit, Entity } from "../../../core/api";
 
 @injectable()
 export class MoveSystem implements OnInit {
 
     constructor(
-        private entityManager: EntityManager,
+        private componentManager: ComponentManager,
         private eventManager: EventManager
     ) { }
 
@@ -25,11 +25,11 @@ export class MoveSystem implements OnInit {
 
     onMoveAction(action: MoveAction) {
         const actor = action.actor;
-        const actorLocationComponent = this.entityManager.getComponent(actor, LocationComponent);
+        const actorLocationComponent = this.componentManager.getComponent(actor, LocationComponent);
         
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
-            const actorLocationExitsComponent = this.entityManager.getComponent(actorLocation, ExitsComponent);
+            const actorLocationExitsComponent = this.componentManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
                 const target = actorLocationExitsComponent.getExitTargetIdInDirection(action.direction);
@@ -44,4 +44,16 @@ export class MoveSystem implements OnInit {
             }
         }
     }
+
+    getEntityChildren(entity: Entity): Entity[] {
+        const children: string[] = [];
+        for (const component of this.componentManager.getComponentsByClass(LocationComponent)) {
+            if (component.value === entity) {
+                children.push(component.entity);
+            }
+        }
+        return children;
+    }
+
+
 }

@@ -4,7 +4,7 @@ import { OnInit, Entity } from "./api";
 import { Component, ComponentType, ComponentClass, ComponentData } from "./component";
 
 @injectable()
-export class EntityManager implements OnInit {
+export class ComponentManager implements OnInit {
     components: Component[];
 
     constructor() { }

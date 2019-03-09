@@ -1,49 +1,48 @@
 import "reflect-metadata";
 import { config } from "./config";
-import { Container, interfaces, decorate, injectable } from "inversify";
+import { Container, decorate, injectable } from "inversify";
 import { Config } from "./api";
 import { Logger } from "./logger";
 import { Network } from "./network";
-import { EntityManager } from "./entityManager";
+import { ComponentManager } from "./componentManager";
 import { Clock } from "./clock";
 import { EventManager } from "./eventManager";
 import { SessionManager } from "./sessionManager";
 
 const container = new Container();
+const services: any[] = [
+    Logger,
+    EventManager,
+    Clock,
+    ComponentManager,
+    SessionManager,
+    Network
+];
 
 export function app(userConfig: Config) {
-
     config.components = userConfig.components || config.components;
     config.network = userConfig.network || config.network;
     config.systems = userConfig.systems || config.systems;
     config.world = userConfig.world || config.world;
 
-    return (target: Function) => {
-        decorate(injectable(), target);
-
-        init(Logger);
-        init(EventManager);
-        init(Clock);
-        init(EntityManager);
-        init(SessionManager);
-        init(Network);
+    return (appClass: Function) => {
+        decorate(injectable(), appClass);
 
         for (const systemClass of config.systems!) {
-            init(systemClass);
+            services.push(systemClass);
         }
 
-        init(target);
-    }
-}
+        services.push(appClass);
 
-function bind<T>(service: interfaces.ServiceIdentifier<T>): any {
-    container.bind(service).toSelf().inSingletonScope();
-    return container.get(service);
-}
+        for (const service of services) {
+            container.bind(service).toSelf().inSingletonScope();
+        }
 
-function init<T>(service: interfaces.ServiceIdentifier<T>): any {
-    const instance = bind(service);
-    if (instance.onInit) {
-        instance.onInit();
+        for (const service of services) {
+            const instance = container.get<any>(service);
+            if (instance.onInit) {
+                instance.onInit();
+            }
+        }
     }
 }
