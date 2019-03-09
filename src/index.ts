@@ -1,6 +1,5 @@
-import { run } from "./core/run";
+import { app } from "./core/app";
 import * as data from "./lib/data/world.json";
-import { Application } from "./core/api";
 import { Network } from "./core/network";
 import { World } from "./core/world";
 import { Client } from "./core/client";
@@ -22,7 +21,7 @@ import { PlayerComponent } from "./lib/components/player.component";
 import { Subscription } from "rxjs";
 
 
-@run({
+@app({
     world: data,
     components: [
         DescriptionComponent,
@@ -37,33 +36,16 @@ import { Subscription } from "rxjs";
         QuitSystem
     ]
 })
-export class App implements Application {
+export class App {
 
     constructor(
         private network: Network,
         private world: World,
         private dispatcher: Dispatcher,
-        private movementHandler: MoveSystem,
-        private lookHandler: LookSystem,
-        private quitHandler: QuitSystem,
         private sessionManager: SessionManager
     ) { }
 
     onInit() {
-        this.dispatcher.message.subscribe(message => {
-            switch (message.constructor) {
-                case LookAction:
-                    this.lookHandler.onLookAction(message as LookAction);
-                    break;
-                case MoveAction:
-                    this.movementHandler.onMoveAction(message as MoveAction);
-                    break;
-                case QuitAction:
-                    this.quitHandler.onQuitAction(message as QuitAction);
-                    break;
-            }
-        });
-
         this.network.clientConnects.subscribe(client => {
             this.readName(client);
         });
@@ -71,18 +53,18 @@ export class App implements Application {
 
     async readName(client: Client) {
         const name = await client.readOnce("Name");
-                
+
         const currentPlayersComponents = this.world.getComponentsByClass(PlayerComponent);
         const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
 
-        if(currentPlayerComponent) {
+        if (currentPlayerComponent) {
             // ALREADY IN WORLD
             const currentPlayer = currentPlayerComponent.entity;
             const currentPlayerSession = this.sessionManager.getSessionForPlayer(currentPlayer);
 
             if (currentPlayerSession) {
-                if(currentPlayerSession.client.isAlive()) {
-                    // already coonnected
+                if (currentPlayerSession.client.isAlive()) {
+                    // already connected
                     client.write("Already connected.");
                     client.disconnect();
                 } else {
@@ -100,7 +82,7 @@ export class App implements Application {
         }
     }
 
-    async createPlayer(client: Client, name: string) {
+    createPlayer(client: Client, name: string) {
         client.write("Hi " + name);
 
         const player = this.world.createEntity();
@@ -122,8 +104,7 @@ export class App implements Application {
         this.dispatcher.dispatch(new LookAction(player));
     }
 
-    async initSession(session: Session) {
-
+    initSession(session: Session) {
         session.data["messageSubscription"] = this.dispatcher.message.pipe(filter(message => message instanceof Message && message.entityId === session.player)).subscribe(message => {
             session.client.write(message.message);
         });

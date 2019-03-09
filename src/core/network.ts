@@ -1,18 +1,18 @@
 import * as WebSocket from "ws";
 import * as Http from "http";
+import { config } from "./config";
 import { Client } from "./client";
 import { Observable, Subject } from "rxjs";
 import { first } from "rxjs/operators";
 import { injectable } from "inversify";
-import { Initializable } from "./api";
+import { OnInit } from "./api";
 import { Logger } from "./logger";
 
 @injectable()
-export class Network implements Initializable {
+export class Network implements OnInit {
     clients: Client[];
     clientConnects: Observable<Client>;
 
-    private _config: NetworkConfig;
     private http: Http.Server;
     private socket: WebSocket.Server;
     private clientConnectsSubject: Subject<Client>;
@@ -22,17 +22,13 @@ export class Network implements Initializable {
         private logger: Logger
     ) { }
 
-    init(config: NetworkConfig): Promise<number> {
-        this._config = {
-            port: config.port || 8080
-        };
-
+    onInit() {
         this.clientConnectsSubject = new Subject();
         this.clientConnects = this.clientConnectsSubject.asObservable();
         this.initsSubject = new Subject();
         this.http = Http.createServer();
         this.http.listen();
-        this.socket = new WebSocket.Server({ server: this.http, port: this.config.port });
+        this.socket = new WebSocket.Server({ server: this.http, port: config.network!.port! });
         this.clients = [];
 
         this.socket.on("connection", connection => {
@@ -46,15 +42,11 @@ export class Network implements Initializable {
         });
 
         this.socket.on("listening", () => {
-            console.log("[Server] listening on port", this.config.port);
+            console.log("[Server] listening on port", config.network!.port!);
             this.initsSubject.next(this.socket.options.port);
         });
 
         return this.initsSubject.pipe(first()).toPromise();
-    }
-
-    get config() {
-        return this._config;
     }
 
     stop() {

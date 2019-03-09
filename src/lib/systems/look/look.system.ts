@@ -7,14 +7,22 @@ import { LocationComponent } from "../../components/location.component";
 import { DescriptionComponent } from "../../components/description.component";
 import { NameComponent } from "../../components/name.component";
 import { ExitsComponent } from "../../components/exits.component";
+import { filter } from "rxjs/operators";
+import { OnInit } from "../../../core/api";
 
 @injectable()
-export class LookSystem {
+export class LookSystem implements OnInit {
 
     constructor(
         private world: World,
         private dispatcher: Dispatcher
     ) { }
+
+    onInit() {
+        this.dispatcher.message.pipe(filter(message => message instanceof LookAction)).subscribe(message => {
+            this.onLookAction(message as LookAction);
+        });
+    }
 
     onLookAction(action: LookAction) {
         const output: string[] = [];

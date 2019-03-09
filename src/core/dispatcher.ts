@@ -1,15 +1,14 @@
 import { injectable } from "inversify";
-import { Initializable } from "./api";
+import { OnInit } from "./api";
 import { Subject, Observable } from "rxjs";
-import { Action } from "./action";
 
 @injectable()
-export class Dispatcher implements Initializable {
+export class Dispatcher implements OnInit {
     message: Observable<any>;
 
     private messageSubject: Subject<any>;
 
-    async init() {
+    onInit() {
         this.messageSubject = new Subject();
         this.message = this.messageSubject.asObservable();
     }

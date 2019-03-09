@@ -1,25 +1,15 @@
 import { injectable } from "inversify";
-import { Initializable, Config } from "./api";
+import { config } from "./config";
+import { OnInit, Entity } from "./api";
 import { Component, ComponentType, ComponentClass, ComponentData } from "./component";
 
 @injectable()
-export class World implements Initializable {
+export class World implements OnInit {
     components: Component[];
-
-    private _config: WorldConfig;
 
     constructor() { }
 
-    get config() {
-        return this._config;
-    }
-
-    async init(config: Config) {
-        this._config = {
-            data: config.world,
-            components: config.components || []
-        };
-
+    async onInit() {
         this.components = [];
 
         this.load();
@@ -28,8 +18,8 @@ export class World implements Initializable {
     }
 
     private load() {
-        for (const datum of this.config.data.components) {
-            const componentClass = this.config.components.find(component => component.name === datum.type);
+        for (const datum of config.world!.components) {
+            const componentClass = config.components!.find(component => component.name === datum.type);
             if (componentClass) {
                 this.addComponent(new componentClass(datum.entity, datum.value, this));
             } else {
@@ -38,7 +28,7 @@ export class World implements Initializable {
         }
     }
 
-    createEntity(): string {
+    createEntity(): Entity {
         return this.generateId();
     }
 
@@ -47,7 +37,7 @@ export class World implements Initializable {
         this.components.push(component);
     }
 
-    getComponent<T extends Component>(entity: string, type: ComponentType<T>): T | undefined {
+    getComponent<T extends Component>(entity: Entity, type: ComponentType<T>): T | undefined {
         return this.components.find(component => component instanceof type && component.entity === entity) as T;
     }
 
@@ -55,7 +45,7 @@ export class World implements Initializable {
         return this.components.filter(component => component instanceof type) as T[];
     }
 
-    removeComponents(entity: string) {
+    removeComponents(entity: Entity) {
         let i = this.components.length;
         while (i--) {
             if (this.components[i].entity === entity) {

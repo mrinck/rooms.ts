@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
-import { Initializable } from "./api";
+import { OnInit } from "./api";
 
 @injectable()
-export class Logger implements Initializable {
+export class Logger implements OnInit {
     
-    async init(config: any) { }
+    onInit() { }
 
     log(...args: any[]) {
         console.log(args.join(' '));

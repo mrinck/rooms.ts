@@ -1,11 +1,11 @@
 import { injectable } from "inversify";
 import { Client } from "./client";
-import { Initializable } from "./api";
+import { OnInit, Entity } from "./api";
 import { Subject, Observable } from "rxjs";
 import { first } from "rxjs/operators";
 
 @injectable()
-export class SessionManager implements Initializable {
+export class SessionManager implements OnInit {
     sessions: Session[];
     authenticates: Observable<string>;
 
@@ -13,18 +13,17 @@ export class SessionManager implements Initializable {
 
     constructor() { }
 
-    async init() {
+    onInit() {
         this.sessions = [];
         this.authenticatesSubject = new Subject();
         this.authenticates = this.authenticatesSubject.asObservable();
-        return;
     }
 
     authenticate(name: string) {
         this.authenticatesSubject.next(name);
     }
 
-    createSession(player: string, client: Client): Session {
+    createSession(player: Entity, client: Client): Session {
         console.log("CREATING SESSION");
         const session = new Session(player, client);
         this.sessions.push(session);
@@ -44,7 +43,7 @@ export class SessionManager implements Initializable {
         }
     }
 
-    getSessionForPlayer(player: string): Session | undefined {
+    getSessionForPlayer(player: Entity): Session | undefined {
         return this.sessions.find(session => session.player === player);
     }
 
@@ -54,7 +53,7 @@ export class SessionManager implements Initializable {
 }
 
 export class Session {
-    player: string;
+    player: Entity;
     data: { [key: string]: any};
     destroys: Observable<void>;
     resets: Observable<void>;
@@ -62,7 +61,7 @@ export class Session {
     private destroysSubject: Subject<void>;
     private resetsSubject: Subject<void>;
 
-    constructor(player: string, client: Client) {
+    constructor(player: Entity, client: Client) {
         this.player = player;
         this.client = client;
         this.destroysSubject = new Subject();

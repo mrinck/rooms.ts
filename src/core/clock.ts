@@ -1,16 +1,17 @@
-import { Subject, Observable, of } from "rxjs";
+import { config } from "./config";
+import { Subject, Observable } from "rxjs";
 import { injectable } from "inversify";
-import { Initializable } from "./api";
+import { OnInit } from "./api";
 
 @injectable()
-export class Clock implements Initializable {
+export class Clock implements OnInit {
     ticks: Observable<number>;
 
     private running: boolean;
     private time: number;
     private ticksSubject: Subject<number>;
     
-    async init(config: any) {
+    onInit() {
         this.time = 0;
         this.ticksSubject = new Subject();
         this.ticks = this.ticksSubject.asObservable();

@@ -1,9 +1,11 @@
+import { Entity } from "./api";
+
 export abstract class Component {
     type: string;
-    entity: string;
+    entity: Entity;
     value: any;
 
-    constructor(entity: string, value: any) {
+    constructor(entity: Entity, value: any) {
         this.type = this.constructor.name;
         this.entity = entity;
         this.value = value;
@@ -20,7 +22,7 @@ export abstract class Component {
 
 export interface ComponentData {
     type: string;
-    entity: any;
+    entity: Entity;
     value: any;
 }
 
