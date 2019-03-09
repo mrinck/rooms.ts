@@ -4,9 +4,9 @@ import { Container, interfaces, decorate, injectable } from "inversify";
 import { Config } from "./api";
 import { Logger } from "./logger";
 import { Network } from "./network";
-import { World } from "./world";
+import { EntityManager } from "./entityManager";
 import { Clock } from "./clock";
-import { Dispatcher } from "./dispatcher";
+import { EventManager } from "./eventManager";
 import { SessionManager } from "./sessionManager";
 
 const container = new Container();
@@ -22,9 +22,9 @@ export function app(userConfig: Config) {
         decorate(injectable(), target);
 
         init(Logger);
-        init(Dispatcher);
+        init(EventManager);
         init(Clock);
-        init(World);
+        init(EntityManager);
         init(SessionManager);
         init(Network);
 

@@ -1,4 +1,4 @@
-import { World } from "../../core/world";
+import { EntityManager } from "../../core/entityManager";
 import { Component } from "../../core/component";
 
 export class LocationComponent extends Component {
@@ -8,9 +8,9 @@ export class LocationComponent extends Component {
         super(entity, value);
     }
 
-    getChildren(world: World): string[] {
+    getChildren(entityManager: EntityManager): string[] {
         const children: string[] = [];
-        for (const component of world.getComponentsByClass(LocationComponent)) {
+        for (const component of entityManager.getComponentsByClass(LocationComponent)) {
             if (component.value === this.value) {
                 children.push(component.entity);
             }

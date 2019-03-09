@@ -1,9 +1,9 @@
 import { app } from "./core/app";
 import * as data from "./lib/data/world.json";
 import { Network } from "./core/network";
-import { World } from "./core/world";
+import { EntityManager } from "./core/entityManager";
 import { Client } from "./core/client";
-import { Dispatcher } from "./core/dispatcher";
+import { EventManager } from "./core/eventManager";
 import { MoveAction } from "./lib/systems/move/move.action";
 import { MoveSystem } from "./lib/systems/move/move.system";
 import { LookSystem } from "./lib/systems/look/look.system";
@@ -40,8 +40,8 @@ export class App {
 
     constructor(
         private network: Network,
-        private world: World,
-        private dispatcher: Dispatcher,
+        private entityManager: EntityManager,
+        private eventManager: EventManager,
         private sessionManager: SessionManager
     ) { }
 
@@ -54,7 +54,7 @@ export class App {
     async readName(client: Client) {
         const name = await client.readOnce("Name");
 
-        const currentPlayersComponents = this.world.getComponentsByClass(PlayerComponent);
+        const currentPlayersComponents = this.entityManager.getComponentsByClass(PlayerComponent);
         const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
 
         if (currentPlayerComponent) {
@@ -85,10 +85,10 @@ export class App {
     createPlayer(client: Client, name: string) {
         client.write("Hi " + name);
 
-        const player = this.world.createEntity();
-        this.world.addComponent(new PlayerComponent(player, name));
-        this.world.addComponent(new NameComponent(player, name));
-        this.world.addComponent(new LocationComponent(player, "1"));
+        const player = this.entityManager.createEntity();
+        this.entityManager.addComponent(new PlayerComponent(player, name));
+        this.entityManager.addComponent(new NameComponent(player, name));
+        this.entityManager.addComponent(new LocationComponent(player, "1"));
 
         const session = this.sessionManager.createSession(player, client);
 
@@ -96,16 +96,16 @@ export class App {
             session.get<Subscription>("messageSubscription").unsubscribe();
             session.get<Subscription>("inputSubscription").unsubscribe();
             session.client.disconnect();
-            this.world.removeComponents(session.player);
+            this.entityManager.removeComponents(session.player);
         });
 
         this.initSession(session);
 
-        this.dispatcher.dispatch(new LookAction(player));
+        this.eventManager.send(new LookAction(player));
     }
 
     initSession(session: Session) {
-        session.data["messageSubscription"] = this.dispatcher.message.pipe(filter(message => message instanceof Message && message.entityId === session.player)).subscribe(message => {
+        session.data["messageSubscription"] = this.eventManager.message.pipe(filter(message => message instanceof Message && message.entityId === session.player)).subscribe(message => {
             session.client.write(message.message);
         });
 
@@ -114,32 +114,32 @@ export class App {
 
             switch (input) {
                 case "quit":
-                    this.dispatcher.dispatch(new QuitAction(session.player));
+                    this.eventManager.send(new QuitAction(session.player));
                     break;
 
                 case "l":
                 case "look":
-                    this.dispatcher.dispatch(new LookAction(session.player));
+                    this.eventManager.send(new LookAction(session.player));
                     break;
 
                 case "n":
                 case "north":
-                    this.dispatcher.dispatch(new MoveAction(session.player, "north"));
+                    this.eventManager.send(new MoveAction(session.player, "north"));
                     break;
 
                 case "e":
                 case "east":
-                    this.dispatcher.dispatch(new MoveAction(session.player, "east"));
+                    this.eventManager.send(new MoveAction(session.player, "east"));
                     break;
 
                 case "s":
                 case "south":
-                    this.dispatcher.dispatch(new MoveAction(session.player, "south"));
+                    this.eventManager.send(new MoveAction(session.player, "south"));
                     break;
 
                 case "w":
                 case "west":
-                    this.dispatcher.dispatch(new MoveAction(session.player, "west"));
+                    this.eventManager.send(new MoveAction(session.player, "west"));
                     break;
 
                 default:

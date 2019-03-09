@@ -2,19 +2,19 @@ import { injectable } from "inversify";
 import { QuitAction } from "./quit.action";
 import { SessionManager } from "../../../core/sessionManager";
 import { filter } from "rxjs/operators";
-import { Dispatcher } from "../../../core/dispatcher";
+import { EventManager } from "../../../core/eventManager";
 import { OnInit } from "../../../core/api";
 
 @injectable()
 export class QuitSystem implements OnInit {
 
     constructor(
-        private dispatcher: Dispatcher,
+        private eventManager: EventManager,
         private sessionManager: SessionManager
     ) {}
 
     onInit() {
-        this.dispatcher.message.pipe(filter(message => message instanceof QuitAction)).subscribe(message => {
+        this.eventManager.message.pipe(filter(message => message instanceof QuitAction)).subscribe(message => {
             this.onQuitAction(message);
         });
     }

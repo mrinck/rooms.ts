@@ -3,7 +3,7 @@ import { OnInit } from "./api";
 import { Subject, Observable } from "rxjs";
 
 @injectable()
-export class Dispatcher implements OnInit {
+export class EventManager implements OnInit {
     message: Observable<any>;
 
     private messageSubject: Subject<any>;
@@ -13,7 +13,7 @@ export class Dispatcher implements OnInit {
         this.message = this.messageSubject.asObservable();
     }
 
-    dispatch(message: any) {
+    send(message: any) {
         this.messageSubject.next(message);
     }
 }

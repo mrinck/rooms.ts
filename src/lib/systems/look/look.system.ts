@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { World } from "../../../core/world";
+import { EntityManager } from "../../../core/entityManager";
 import { LookAction } from "./look.action";
-import { Dispatcher } from "../../../core/dispatcher";
+import { EventManager } from "../../../core/eventManager";
 import { Message } from "../../../core/message";
 import { LocationComponent } from "../../components/location.component";
 import { DescriptionComponent } from "../../components/description.component";
@@ -14,12 +14,12 @@ import { OnInit } from "../../../core/api";
 export class LookSystem implements OnInit {
 
     constructor(
-        private world: World,
-        private dispatcher: Dispatcher
+        private entityManager: EntityManager,
+        private eventManager: EventManager
     ) { }
 
     onInit() {
-        this.dispatcher.message.pipe(filter(message => message instanceof LookAction)).subscribe(message => {
+        this.eventManager.message.pipe(filter(message => message instanceof LookAction)).subscribe(message => {
             this.onLookAction(message as LookAction);
         });
     }
@@ -28,30 +28,30 @@ export class LookSystem implements OnInit {
         const output: string[] = [];
         const actor = action.actor;
 
-        const actorLocationComponent = this.world.getComponent(actor, LocationComponent);
+        const actorLocationComponent = this.entityManager.getComponent(actor, LocationComponent);
 
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
 
-            const actorLocationDescriptionComponent = this.world.getComponent(actorLocation, DescriptionComponent);
+            const actorLocationDescriptionComponent = this.entityManager.getComponent(actorLocation, DescriptionComponent);
 
             if (actorLocationDescriptionComponent) {
                 const actorLocationDescription = actorLocationDescriptionComponent.value;
                 output.push(actorLocationDescription + "\n");
             }
 
-            const actorLocationChildren = actorLocationComponent.getChildren(this.world);
+            const actorLocationChildren = actorLocationComponent.getChildren(this.entityManager);
 
             for (const content of actorLocationChildren) {
                 if (content != actor) {
-                    const contentNameComponent = this.world.getComponent(content, NameComponent);
+                    const contentNameComponent = this.entityManager.getComponent(content, NameComponent);
                     if (contentNameComponent) {
                         output.push(contentNameComponent.value + " is here. \n");
                     }
                 }
             }
 
-            const actorLocationExitsComponent = this.world.getComponent(actorLocation, ExitsComponent);
+            const actorLocationExitsComponent = this.entityManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
                 output.push("Exits: " + actorLocationExitsComponent.getExitDirections().join(', ') + "\n");
@@ -60,7 +60,7 @@ export class LookSystem implements OnInit {
             output.push("Whiteness");
         }
 
-        this.dispatcher.dispatch(new Message(action.actor, output.join('')));
+        this.eventManager.send(new Message(action.actor, output.join('')));
     }
 
 }
