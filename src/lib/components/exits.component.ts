@@ -1,4 +1,5 @@
 import { Component } from "../../core/component";
+import { Entity } from "../../core/api";
 
 export class ExitsComponent extends Component {
     value: Exit[];
@@ -11,36 +12,36 @@ export class ExitsComponent extends Component {
         this.value.push(exit);
     }
 
-    getExitTargetIdInDirection(direction?: string): string | undefined {
+    getTargetForDirection(direction?: string): Entity | undefined {
         if (direction) {
             for (const exit of this.value) {
                 if (exit.direction === direction) {
-                    return exit.targetId;
+                    return exit.target;
                 }
             }
         }
     }
 
-    getExitDirectionOfTargetId(targetId?: string): string | undefined {
+    getDirectionForTarget(targetId?: string): string | undefined {
         if (targetId) {
             for (const exit of this.value) {
-                if (exit.targetId === targetId) {
+                if (exit.target === targetId) {
                     return exit.direction;
                 }
             }
         }
     }
 
-    getExitDirections(): string[] {
+    getDirections(): string[] {
         return this.value.map(exit => exit.direction);
     }
 
-    getExitTargetIds(): string[] {
-        return this.value.map(exit => exit.targetId);
+    getTargets(): Entity[] {
+        return this.value.map(exit => exit.target);
     }
 }
 
 export interface Exit {
     direction: string;
-    targetId: string;
+    target: Entity;
 }

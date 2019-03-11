@@ -11,6 +11,7 @@ import { filter } from "rxjs/operators";
 import { OnInit } from "../../../core/api";
 import { MoveSystem } from "../move/move.system";
 import { system } from "../../../core/system";
+import { LocationUtil } from "../../util/locationUtil";
 
 @injectable()
 @system()
@@ -44,7 +45,7 @@ export class LookSystem implements OnInit {
                 output.push(actorLocationDescription + "\n");
             }
 
-            const actorLocationChildren = this.moveSystem.getEntityChildren(actorLocation);
+            const actorLocationChildren = LocationUtil.getLocationChildren(actorLocation, this.componentManager);
 
             for (const content of actorLocationChildren) {
                 if (content != actor) {
@@ -58,7 +59,7 @@ export class LookSystem implements OnInit {
             const actorLocationExitsComponent = this.componentManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
-                output.push("Exits: " + actorLocationExitsComponent.getExitDirections().join(', ') + "\n");
+                output.push("Exits: " + actorLocationExitsComponent.getDirections().join(', ') + "\n");
             }
         } else {
             output.push("Whiteness");

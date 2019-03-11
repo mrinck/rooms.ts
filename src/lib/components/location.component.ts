@@ -1,4 +1,6 @@
 import { Component } from "../../core/component";
+import { ComponentManager } from "../../core/componentManager";
+import { Entity } from "../../core/api";
 
 export class LocationComponent extends Component {
     value: string;
@@ -6,4 +8,5 @@ export class LocationComponent extends Component {
     constructor(entity: string, value: string) {
         super(entity, value);
     }
+
 }

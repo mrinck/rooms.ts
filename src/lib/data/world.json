@@ -16,11 +16,11 @@
             "value": [
                 {
                     "direction": "north",
-                    "targetId": "3"
+                    "target": "3"
                 },
                 {
                     "direction": "south",
-                    "targetId": "2"
+                    "target": "2"
                 }
             ]
         },
@@ -40,11 +40,11 @@
             "value": [
                 {
                     "direction": "north",
-                    "targetId": "1"
+                    "target": "1"
                 },
                 {
                     "direction": "south",
-                    "targetId": "3"
+                    "target": "3"
                 }
             ]
         },
@@ -64,11 +64,11 @@
             "value": [
                 {
                     "direction": "north",
-                    "targetId": "2"
+                    "target": "2"
                 },
                 {
                     "direction": "south",
-                    "targetId": "1"
+                    "target": "1"
                 }
             ]
         }
