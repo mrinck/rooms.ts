@@ -12,6 +12,7 @@ import { OnInit } from "../../../core/api";
 import { MoveSystem } from "../move/move.system";
 import { system } from "../../../core/system";
 import { LocationUtil } from "../../util/locationUtil";
+import { ExitsUtil } from "../../util/exitsUtil";
 
 @injectable()
 @system()
@@ -59,7 +60,7 @@ export class LookSystem implements OnInit {
             const actorLocationExitsComponent = this.componentManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
-                output.push("Exits: " + actorLocationExitsComponent.getDirections().join(', ') + "\n");
+                output.push("Exits: " + ExitsUtil.getExitsComponentDirections(actorLocationExitsComponent).join(', ') + "\n");
             }
         } else {
             output.push("Whiteness");

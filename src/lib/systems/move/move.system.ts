@@ -7,10 +7,11 @@ import { ExitsComponent } from "../../components/exits.component";
 import { LookAction } from "../look/look.action";
 import { Message } from "../../../core/message";
 import { filter } from "rxjs/operators";
-import { OnInit, Entity } from "../../../core/api";
+import { OnInit } from "../../../core/api";
 import { MoveStartEvent, MoveEndEvent } from "./move.event";
 import { NameComponent } from "../../components/name.component";
 import { LocationUtil } from "../../util/locationUtil";
+import { ExitsUtil } from "../../util/exitsUtil";
 
 @injectable()
 export class MoveSystem implements OnInit {
@@ -43,7 +44,7 @@ export class MoveSystem implements OnInit {
             const actorLocationExitsComponent = this.componentManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
-                const target = actorLocationExitsComponent.getTargetForDirection(action.direction);
+                const target = ExitsUtil.getExitsComponentTargetForDirection(actorLocationExitsComponent, action.direction);
 
                 if (target) {
                     actorLocationComponent.value = target;
@@ -64,9 +65,9 @@ export class MoveSystem implements OnInit {
         if (actorNameComponent) {
             actorName = actorNameComponent.value;
         }
-        const startLocationChildren = LocationUtil.getLocationChildren(event.location, this.componentManager);
-        console.log("startlocationchildren", startLocationChildren);
-        for (const child of startLocationChildren) {
+        const locationChildren = LocationUtil.getLocationChildren(event.location, this.componentManager);
+        console.log("startlocationchildren", locationChildren);
+        for (const child of locationChildren) {
             if (child !== event.actor) {
                 this.eventManager.send(new Message(child, actorName + " leaves to " + event.direction));
             }
@@ -74,18 +75,30 @@ export class MoveSystem implements OnInit {
     }
 
     onMoveEndEvent(event: MoveEndEvent) {
+        let actorName: string | undefined;
+        let enterDirection: string | undefined;
+
         const actorNameComponent = this.componentManager.getComponent(event.actor, NameComponent);
-        let actorName = "Someone";
+
         if (actorNameComponent) {
             actorName = actorNameComponent.value;
         }
-        const locationComponent = this.componentManager.getComponent(event.location, LocationComponent);
-        if (locationComponent) {
-            const startLocationChildren = LocationUtil.getLocationChildren(locationComponent.value, this.componentManager);
-            for (const child of startLocationChildren) {
-                if (child !== event.actor) {
-                    this.eventManager.send(new Message(child, actorName + " enters from " + event.startLocation));
-                }
+
+        const locationExitsComponent = this.componentManager.getComponent(event.location, ExitsComponent);
+
+        if (locationExitsComponent) {
+            const direction = ExitsUtil.getExitsComponentDirectionForTarget(locationExitsComponent, event.startLocation);
+            
+            if (direction) {
+                enterDirection = direction;
+            }
+        }
+        
+        const locationChildren = LocationUtil.getLocationChildren(event.location, this.componentManager);
+
+        for (const child of locationChildren) {
+            if (child !== event.actor) {
+                this.eventManager.send(new Message(child, (actorName || "Someone") + " enters from " + (enterDirection || "somewhere")));
             }
         }
     }
