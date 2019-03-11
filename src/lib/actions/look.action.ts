@@ -1,4 +1,4 @@
-import { Action } from "../../../core/action";
+import { Action } from "../../core/action";
 
 export class LookAction extends Action {
 

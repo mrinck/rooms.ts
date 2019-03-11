@@ -1,18 +1,17 @@
 import { injectable } from "inversify";
-import { ComponentManager } from "../../../core/componentManager";
-import { LookAction } from "./look.action";
-import { EventManager } from "../../../core/eventManager";
-import { Message } from "../../../core/message";
-import { LocationComponent } from "../../components/location.component";
-import { DescriptionComponent } from "../../components/description.component";
-import { NameComponent } from "../../components/name.component";
-import { ExitsComponent } from "../../components/exits.component";
+import { ComponentManager } from "../../core/componentManager";
+import { LookAction } from "../actions/look.action";
+import { EventManager } from "../../core/eventManager";
+import { Message } from "../../core/message";
+import { LocationComponent } from "../components/location.component";
+import { DescriptionComponent } from "../components/description.component";
+import { NameComponent } from "../components/name.component";
+import { ExitsComponent } from "../components/exits.component";
 import { filter } from "rxjs/operators";
-import { OnInit } from "../../../core/api";
-import { MoveSystem } from "../move/move.system";
-import { system } from "../../../core/system";
-import { LocationUtil } from "../../util/locationUtil";
-import { ExitsUtil } from "../../util/exitsUtil";
+import { OnInit } from "../../core/api";
+import { system } from "../../core/system";
+import { LocationUtil } from "../util/locationUtil";
+import { ExitsUtil } from "../util/exitsUtil";
 
 @injectable()
 @system()
@@ -20,8 +19,7 @@ export class LookSystem implements OnInit {
 
     constructor(
         private componentManager: ComponentManager,
-        private eventManager: EventManager,
-        private moveSystem: MoveSystem
+        private eventManager: EventManager
     ) { }
 
     onInit() {

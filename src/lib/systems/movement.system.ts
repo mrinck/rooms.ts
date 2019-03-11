@@ -1,20 +1,21 @@
 import { injectable } from "inversify";
-import { ComponentManager } from "../../../core/componentManager";
-import { EventManager } from "../../../core/eventManager";
-import { MoveAction } from "./move.action";
-import { LocationComponent } from "../../components/location.component";
-import { ExitsComponent } from "../../components/exits.component";
-import { LookAction } from "../look/look.action";
-import { Message } from "../../../core/message";
+import { ComponentManager } from "../../core/componentManager";
+import { EventManager } from "../../core/eventManager";
+import { MoveAction } from "../actions/move.action";
+import { LocationComponent } from "../components/location.component";
+import { ExitsComponent } from "../components/exits.component";
+import { LookAction } from "../actions/look.action";
+import { Message } from "../../core/message";
 import { filter } from "rxjs/operators";
-import { OnInit } from "../../../core/api";
-import { MoveStartEvent, MoveEndEvent } from "./move.event";
-import { NameComponent } from "../../components/name.component";
-import { LocationUtil } from "../../util/locationUtil";
-import { ExitsUtil } from "../../util/exitsUtil";
+import { OnInit } from "../../core/api";
+import { MoveStartEvent } from "../events/moveStart.event";
+import { NameComponent } from "../components/name.component";
+import { LocationUtil } from "../util/locationUtil";
+import { ExitsUtil } from "../util/exitsUtil";
+import { MoveEndEvent } from "../events/moveEnd.event";
 
 @injectable()
-export class MoveSystem implements OnInit {
+export class MovementSystem implements OnInit {
 
     constructor(
         private componentManager: ComponentManager,

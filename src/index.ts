@@ -4,12 +4,12 @@ import { Network } from "./core/network";
 import { ComponentManager } from "./core/componentManager";
 import { Client } from "./core/client";
 import { EventManager } from "./core/eventManager";
-import { MoveAction } from "./lib/systems/move/move.action";
-import { MoveSystem } from "./lib/systems/move/move.system";
-import { LookSystem } from "./lib/systems/look/look.system";
-import { QuitAction } from "./lib/systems/quit/quit.action";
-import { QuitSystem } from "./lib/systems/quit/quit.system";
-import { LookAction } from "./lib/systems/look/look.action";
+import { MoveAction } from "./lib/actions/move.action";
+import { MovementSystem } from "./lib/systems/movement.system";
+import { LookSystem } from "./lib/systems/look.system";
+import { QuitAction } from "./lib/actions/quit.action";
+import { QuitSystem } from "./lib/systems/quit.system";
+import { LookAction } from "./lib/actions/look.action";
 import { ExitsComponent } from "./lib/components/exits.component";
 import { LocationComponent } from "./lib/components/location.component";
 import { Message } from "./core/message";
@@ -31,7 +31,7 @@ import { Subscription } from "rxjs";
     ],
     systems: [
         LookSystem,
-        MoveSystem,
+        MovementSystem,
         QuitSystem
     ]
 })

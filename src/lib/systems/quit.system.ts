@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
-import { QuitAction } from "./quit.action";
-import { SessionManager } from "../../../core/sessionManager";
+import { QuitAction } from "../actions/quit.action";
+import { SessionManager } from "../../core/sessionManager";
 import { filter } from "rxjs/operators";
-import { EventManager } from "../../../core/eventManager";
-import { OnInit } from "../../../core/api";
+import { EventManager } from "../../core/eventManager";
+import { OnInit } from "../../core/api";
 
 @injectable()
 export class QuitSystem implements OnInit {
