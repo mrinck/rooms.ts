@@ -60,17 +60,19 @@ export class MovementSystem implements OnInit {
     }
 
     onMoveStartEvent(event: MoveStartEvent) {
-        console.log("Move Start", event);
+        let actorName: string | undefined;
+        
         const actorNameComponent = this.componentManager.getComponent(event.actor, NameComponent);
-        let actorName = "Someone";
+
         if (actorNameComponent) {
             actorName = actorNameComponent.value;
         }
+        
         const locationChildren = LocationUtil.getLocationChildren(event.location, this.componentManager);
-        console.log("startlocationchildren", locationChildren);
+        
         for (const child of locationChildren) {
             if (child !== event.actor) {
-                this.eventManager.send(new Message(child, actorName + " leaves to " + event.direction));
+                this.eventManager.send(new Message(child, (actorName || "Someone") + " leaves to " + event.direction));
             }
         }
     }
