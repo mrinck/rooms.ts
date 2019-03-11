@@ -1,7 +1,6 @@
-import { Component } from "../../core/component";
-import { ComponentManager } from "../../core/componentManager";
-import { Entity } from "../../core/api";
+import { Component, component } from "../../core/component";
 
+@component()
 export class LocationComponent extends Component {
     value: string;
 

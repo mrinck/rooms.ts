@@ -1,5 +1,6 @@
-import { Component } from "../../core/component";
+import { Component, component } from "../../core/component";
 
+@component()
 export class PlayerComponent extends Component {
     value: string;
 

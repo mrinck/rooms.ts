@@ -10,11 +10,9 @@ import { LookSystem } from "./lib/systems/look.system";
 import { QuitAction } from "./lib/actions/quit.action";
 import { QuitSystem } from "./lib/systems/quit.system";
 import { LookAction } from "./lib/actions/look.action";
-import { ExitsComponent } from "./lib/components/exits.component";
 import { LocationComponent } from "./lib/components/location.component";
 import { Message } from "./core/message";
 import { NameComponent } from "./lib/components/name.component";
-import { DescriptionComponent } from "./lib/components/description.component";
 import { filter, first } from "rxjs/operators";
 import { SessionManager, Session } from "./core/sessionManager";
 import { PlayerComponent } from "./lib/components/player.component";
@@ -22,13 +20,6 @@ import { Subscription } from "rxjs";
 
 @app({
     world: data,
-    components: [
-        DescriptionComponent,
-        ExitsComponent,
-        LocationComponent,
-        NameComponent,
-        PlayerComponent
-    ],
     systems: [
         LookSystem,
         MovementSystem,
@@ -45,6 +36,7 @@ export class App {
     ) { }
 
     onInit() {
+
         this.network.clientConnects.subscribe(client => {
             this.readName(client);
         });

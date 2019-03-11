@@ -1,4 +1,11 @@
 import { Entity } from "./api";
+import { config } from "./config";
+
+export function component() {
+    return (componentClass: any) => {
+        config.components!.push(componentClass);
+    }
+}
 
 export abstract class Component {
     type: string;

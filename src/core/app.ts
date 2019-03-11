@@ -25,7 +25,7 @@ export function app(userConfig: Config) {
     config.systems = userConfig.systems || config.systems;
     config.world = userConfig.world || config.world;
 
-    return (appClass: Function) => {
+    return (appClass: any) => {
         decorate(injectable(), appClass);
 
         for (const systemClass of config.systems!) {
