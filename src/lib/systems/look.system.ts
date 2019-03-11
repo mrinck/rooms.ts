@@ -10,8 +10,8 @@ import { ExitsComponent } from "../components/exits.component";
 import { filter } from "rxjs/operators";
 import { OnInit } from "../../core/api";
 import { system } from "../../core/system";
-import { LocationUtil } from "../util/locationUtil";
-import { ExitsUtil } from "../util/exitsUtil";
+import { LocationUtil } from "../util/location.util";
+import { ExitsUtil } from "../util/exits.util";
 
 @injectable()
 @system()

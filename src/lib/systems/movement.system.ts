@@ -10,8 +10,8 @@ import { filter } from "rxjs/operators";
 import { OnInit } from "../../core/api";
 import { MoveStartEvent } from "../events/moveStart.event";
 import { NameComponent } from "../components/name.component";
-import { LocationUtil } from "../util/locationUtil";
-import { ExitsUtil } from "../util/exitsUtil";
+import { LocationUtil } from "../util/location.util";
+import { ExitsUtil } from "../util/exits.util";
 import { MoveEndEvent } from "../events/moveEnd.event";
 
 @injectable()
