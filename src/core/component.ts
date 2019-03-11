@@ -2,8 +2,8 @@ import { config } from "./config";
 import { Entity } from "./api";
 
 export function component() {
-    return (componentClass: any) => {
-        config.componentClasses.push(componentClass);
+    return (componentType: any) => {
+        config.componentTypes.push(componentType);
     }
 }
 
@@ -19,7 +19,3 @@ export abstract class Component {
 }
 
 export interface ComponentType<T extends Component> { new(...args: any[]): T }
-
-export interface ComponentClass {
-    new(...params: any[]): Component;
-}

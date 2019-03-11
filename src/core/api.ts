@@ -1,11 +1,10 @@
 import { NetworkConfig } from "./network";
-import { ComponentClass } from "./component";
-import { WorldData } from "./componentManager";
+import { ComponentType, Component } from "./component";
 
 export interface DefaultConfig {
     network: NetworkConfig;
     world: WorldData;
-    componentClasses: ComponentClass[];
+    componentTypes: ComponentType<any>[];
     systems: SystemClass[];
 }
 
@@ -24,4 +23,8 @@ export interface SystemClass {
 
 export interface OnInit {
     onInit(): void;
+}
+
+export interface WorldData {
+    components: Component[];
 }

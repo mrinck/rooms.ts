@@ -1,7 +1,7 @@
 import { DefaultConfig } from "./api";
 
 export const config: DefaultConfig = {
-    componentClasses: [],
+    componentTypes: [],
     network: {
         port: 8080
     },

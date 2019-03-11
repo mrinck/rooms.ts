@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { config } from "./config";
 import { OnInit, Entity } from "./api";
-import { Component, ComponentType, ComponentClass } from "./component";
+import { Component, ComponentType } from "./component";
 
 @injectable()
 export class ComponentManager implements OnInit {
@@ -19,9 +19,9 @@ export class ComponentManager implements OnInit {
 
     private load() {
         for (const datum of config.world.components) {
-            const componentClass = config.componentClasses.find(component => component.name === datum.type);
-            if (componentClass) {
-                this.addComponent(new componentClass(datum.entity, datum.value, this));
+            const componentType = config.componentTypes.find(component => component.name === datum.type);
+            if (componentType) {
+                this.addComponent(new componentType(datum.entity, datum.value, this));
             } else {
                 console.log("unknown component", datum.type);
             }
@@ -41,10 +41,6 @@ export class ComponentManager implements OnInit {
         return this.components.find(component => component instanceof type && component.entity === entity) as T;
     }
 
-    getComponentsByClass<T extends Component>(type: ComponentType<T>): T[] {
-        return this.components.filter(component => component instanceof type) as T[];
-    }
-
     removeComponents(entity: Entity) {
         let i = this.components.length;
         while (i--) {
@@ -53,6 +49,10 @@ export class ComponentManager implements OnInit {
                 this.components.splice(i, 1);
             }
         }
+    }
+
+    getAllComponentsOfType<T extends Component>(type: ComponentType<T>): T[] {
+        return this.components.filter(component => component instanceof type) as T[];
     }
 
     /**
@@ -67,13 +67,4 @@ export class ComponentManager implements OnInit {
         }
         return id.join("");
     }
-}
-
-export interface WorldConfig {
-    data: WorldData;
-    components: ComponentClass[];
-}
-
-export interface WorldData {
-    components: Component[]
 }

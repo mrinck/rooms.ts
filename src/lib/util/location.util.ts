@@ -6,7 +6,7 @@ export class LocationUtil {
 
     static getLocationChildren(entity: Entity, componentManager: ComponentManager): Entity[] {
         const children: string[] = [];
-        for (const component of componentManager.getComponentsByClass(LocationComponent)) {
+        for (const component of componentManager.getAllComponentsOfType(LocationComponent)) {
             if (component.value === entity) {
                 children.push(component.entity);
             }
