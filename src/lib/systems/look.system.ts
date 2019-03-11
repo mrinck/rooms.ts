@@ -9,12 +9,10 @@ import { NameComponent } from "../components/name.component";
 import { ExitsComponent } from "../components/exits.component";
 import { filter } from "rxjs/operators";
 import { OnInit } from "../../core/api";
-import { system } from "../../core/system";
 import { LocationUtil } from "../util/location.util";
 import { ExitsUtil } from "../util/exits.util";
 
 @injectable()
-@system()
 export class LookSystem implements OnInit {
 
     constructor(

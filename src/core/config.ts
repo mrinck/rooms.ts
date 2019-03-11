@@ -1,7 +1,7 @@
-import { Config } from "./api";
+import { DefaultConfig } from "./api";
 
-export const config: Config = {
-    components: [],
+export const config: DefaultConfig = {
+    componentClasses: [],
     network: {
         port: 8080
     },

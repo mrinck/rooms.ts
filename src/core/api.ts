@@ -2,10 +2,16 @@ import { NetworkConfig } from "./network";
 import { ComponentClass } from "./component";
 import { WorldData } from "./componentManager";
 
+export interface DefaultConfig {
+    network: NetworkConfig;
+    world: WorldData;
+    componentClasses: ComponentClass[];
+    systems: SystemClass[];
+}
+
 export interface Config {
     network?: NetworkConfig;
     world?: WorldData;
-    components?: ComponentClass[];
     systems?: SystemClass[];
 }
 

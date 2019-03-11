@@ -1,36 +1,21 @@
-import { Entity } from "./api";
 import { config } from "./config";
+import { Entity } from "./api";
 
 export function component() {
     return (componentClass: any) => {
-        config.components!.push(componentClass);
+        config.componentClasses.push(componentClass);
     }
 }
 
 export abstract class Component {
     type: string;
-    entity: Entity;
-    value: any;
 
-    constructor(entity: Entity, value: any) {
+    abstract entity: Entity;
+    abstract value: any;
+
+    constructor() {
         this.type = this.constructor.name;
-        this.entity = entity;
-        this.value = value;
     }
-
-    toJSON(): ComponentData {
-        return {
-            type: this.type,
-            entity: this.entity,
-            value: this.value
-        }
-    }
-}
-
-export interface ComponentData {
-    type: string;
-    entity: Entity;
-    value: any;
 }
 
 export interface ComponentType<T extends Component> { new(...args: any[]): T }

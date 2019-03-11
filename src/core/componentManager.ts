@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { config } from "./config";
 import { OnInit, Entity } from "./api";
-import { Component, ComponentType, ComponentClass, ComponentData } from "./component";
+import { Component, ComponentType, ComponentClass } from "./component";
 
 @injectable()
 export class ComponentManager implements OnInit {
@@ -18,8 +18,8 @@ export class ComponentManager implements OnInit {
     }
 
     private load() {
-        for (const datum of config.world!.components) {
-            const componentClass = config.components!.find(component => component.name === datum.type);
+        for (const datum of config.world.components) {
+            const componentClass = config.componentClasses.find(component => component.name === datum.type);
             if (componentClass) {
                 this.addComponent(new componentClass(datum.entity, datum.value, this));
             } else {
@@ -75,5 +75,5 @@ export interface WorldConfig {
 }
 
 export interface WorldData {
-    components: ComponentData[]
+    components: Component[]
 }

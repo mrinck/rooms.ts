@@ -1,5 +1,4 @@
 import { ExitsComponent } from "../components/exits.component";
-import { ComponentManager } from "../../core/componentManager";
 import { Entity } from "../../core/api";
 
 export class ExitsUtil {

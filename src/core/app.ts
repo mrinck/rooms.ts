@@ -20,7 +20,6 @@ const services: any[] = [
 ];
 
 export function app(userConfig: Config) {
-    config.components = userConfig.components || config.components;
     config.network = userConfig.network || config.network;
     config.systems = userConfig.systems || config.systems;
     config.world = userConfig.world || config.world;

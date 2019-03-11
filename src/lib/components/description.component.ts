@@ -1,10 +1,13 @@
-import { Component, component } from "../../core/component";
+import { component, Component } from "../../core/component";
+import { Entity } from "../../core/api";
 
 @component()
 export class DescriptionComponent extends Component {
-    value: string;
-
-    constructor(entity: string, value: string) {
-        super(entity, value);
+    
+    constructor(
+        public entity: Entity,
+        public value: string
+    ) {
+        super();
     }
 }
