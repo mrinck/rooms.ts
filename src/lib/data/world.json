@@ -72,5 +72,11 @@
                 }
             ]
         }
+    ],
+    "scripts": [
+        {
+            "type": "MovementDetectionScript",
+            "entity": "1"
+        }
     ]
 }

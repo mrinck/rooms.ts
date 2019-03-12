@@ -3,7 +3,6 @@ import { Entity } from "../../core/api";
 
 @component()
 export class ExitsComponent extends Component {
-
     constructor(
         public entity: Entity,
         public value: {
