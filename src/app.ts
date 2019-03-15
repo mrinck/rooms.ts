@@ -8,7 +8,7 @@ import { MoveAction } from "./lib/actions/move.action";
 import { MovementSystem } from "./lib/systems/movement.system";
 import { LookSystem } from "./lib/systems/look.system";
 import { QuitAction } from "./lib/actions/quit.action";
-import { QuitSystem } from "./lib/systems/quit.system";
+import { SessionSystem } from "./lib/systems/session.system";
 import { LookAction } from "./lib/actions/look.action";
 import { LocationComponent } from "./lib/components/location.component";
 import { Message } from "./core/message";
@@ -17,13 +17,14 @@ import { filter, first } from "rxjs/operators";
 import { SessionManager, Session } from "./core/sessionManager";
 import { PlayerComponent } from "./lib/components/player.component";
 import { Subscription } from "rxjs";
+import { SessionStartEvent } from "./lib/events/sessionStart.event";
 
 @app({
     world: data,
     systems: [
         LookSystem,
         MovementSystem,
-        QuitSystem
+        SessionSystem
     ]
 })
 export class App {
@@ -92,7 +93,7 @@ export class App {
 
         this.initSession(session);
 
-        this.eventManager.send(new LookAction(player));
+        this.eventManager.send(new SessionStartEvent(player));
     }
 
     initSession(session: Session) {

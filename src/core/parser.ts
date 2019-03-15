@@ -106,11 +106,6 @@ export class Parser {
     }
 }
 
-export interface ParserConfig {
-    pattern: string,
-    command: ParserCommand
-}
-
 export interface ParserToken {
     regex: RegExp;
     params: string[];
@@ -123,5 +118,3 @@ export interface ParserMatchResult {
     matching: boolean;
     params: { [name: string]: string };
 }
-
-export type ParserCommand = (player: any, params: { [key: string]: string }) => any;
