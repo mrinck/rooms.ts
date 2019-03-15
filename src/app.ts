@@ -18,13 +18,16 @@ import { SessionManager, Session } from "./core/sessionManager";
 import { PlayerComponent } from "./lib/components/player.component";
 import { Subscription } from "rxjs";
 import { SessionStartEvent } from "./lib/events/sessionStart.event";
+import { SpeechSystem } from "./lib/systems/speech.system";
+import { SayAction } from "./lib/actions/say.action";
 
 @app({
     world: data,
     systems: [
         LookSystem,
         MovementSystem,
-        SessionSystem
+        SessionSystem,
+        SpeechSystem
     ]
 })
 export class App {
@@ -104,7 +107,7 @@ export class App {
         session.data["inputSubscription"] = session.client.messages.subscribe(input => {
             input = input.trim();
 
-            switch (input) {
+            switch (input.split(" ")[0]) {
                 case "quit":
                     this.eventManager.send(new QuitAction(session.player));
                     break;
@@ -132,6 +135,11 @@ export class App {
                 case "w":
                 case "west":
                     this.eventManager.send(new MoveAction(session.player, "west"));
+                    break;
+
+                case "say":
+                    const message = input.substr(4);
+                    this.eventManager.send(new SayAction(session.player, message));
                     break;
 
                 default:
