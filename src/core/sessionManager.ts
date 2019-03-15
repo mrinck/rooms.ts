@@ -24,7 +24,6 @@ export class SessionManager implements OnInit {
     }
 
     createSession(player: Entity, client: Client): Session {
-        console.log("CREATING SESSION");
         const session = new Session(player, client);
         this.sessions.push(session);
 
@@ -34,8 +33,6 @@ export class SessionManager implements OnInit {
     }
 
     destroySession(session: Session) {
-        console.log("DESTROYING SESSION");
-
         const index = this.sessions.indexOf(session);
 
         if (index) {
