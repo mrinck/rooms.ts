@@ -18,7 +18,7 @@
    npm install
    ```
 
-4. Run server
+4. Run dev server (reloads on code changes)
 
    ```
    npm start
