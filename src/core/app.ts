@@ -1,13 +1,13 @@
 import "reflect-metadata";
 import { config } from "./config";
 import { Container, decorate, injectable } from "inversify";
-import { Config } from "./api";
 import { Logger } from "./logger";
 import { Network } from "./network";
 import { ComponentManager } from "./componentManager";
 import { Clock } from "./clock";
 import { EventManager } from "./eventManager";
 import { SessionManager } from "./sessionManager";
+import { SystemManager } from "./systemManager";
 
 const container = new Container();
 const services: any[] = [
@@ -16,14 +16,11 @@ const services: any[] = [
     Clock,
     ComponentManager,
     SessionManager,
+    SystemManager,
     Network
 ];
 
-export function app(userConfig: Config) {
-    config.network.port = userConfig.network && userConfig.network.port || config.network.port;
-    config.systems = userConfig.systems || config.systems;
-    config.world = userConfig.world || config.world;
-
+export function app() {
     return (appClass: any) => {
         decorate(injectable(), appClass);
 
@@ -45,3 +42,4 @@ export function app(userConfig: Config) {
         }
     }
 }
+

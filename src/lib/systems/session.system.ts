@@ -1,9 +1,6 @@
-import { injectable } from "inversify";
 import { QuitAction } from "../actions/quit.action";
 import { SessionManager } from "../../core/sessionManager";
-import { filter } from "rxjs/operators";
 import { EventManager } from "../../core/eventManager";
-import { OnInit } from "../../core/api";
 import { SessionEndEvent } from "../events/sessionEnd.event";
 import { ComponentManager } from "../../core/componentManager";
 import { SessionStartEvent } from "../events/sessionStart.event";
@@ -12,29 +9,16 @@ import { LocationComponent } from "../components/location.component";
 import { LocationUtil } from "../util/location.util";
 import { NameComponent } from "../components/name.component";
 import { Message } from "../../core/message";
+import { system } from "../../core/system";
 
-@injectable()
-export class SessionSystem implements OnInit {
+@system()
+export class SessionSystem {
 
     constructor(
         private componentManager: ComponentManager,
         private eventManager: EventManager,
         private sessionManager: SessionManager
     ) {}
-
-    onInit() {
-        this.eventManager.message.pipe(filter(message => message instanceof QuitAction)).subscribe(message => {
-            this.onQuitAction(message);
-        });
-
-        this.eventManager.message.pipe(filter(message => message instanceof SessionStartEvent)).subscribe(message => {
-            this.onSessionStartEvent(message);
-        });
-
-        this.eventManager.message.pipe(filter(message => message instanceof SessionEndEvent)).subscribe(message => {
-            this.onSessionEndEvent(message);
-        });
-    }
 
     onQuitAction(action: QuitAction) {
         this.eventManager.send(new SessionEndEvent(action.actor));

@@ -1,4 +1,3 @@
-import { injectable } from "inversify";
 import { ComponentManager } from "../../core/componentManager";
 import { EventManager } from "../../core/eventManager";
 import { MoveAction } from "../actions/move.action";
@@ -6,35 +5,20 @@ import { LocationComponent } from "../components/location.component";
 import { ExitsComponent } from "../components/exits.component";
 import { LookAction } from "../actions/look.action";
 import { Message } from "../../core/message";
-import { filter } from "rxjs/operators";
-import { OnInit } from "../../core/api";
 import { MoveStartEvent } from "../events/moveStart.event";
 import { NameComponent } from "../components/name.component";
 import { LocationUtil } from "../util/location.util";
 import { ExitsUtil } from "../util/exits.util";
 import { MoveEndEvent } from "../events/moveEnd.event";
+import { system } from "../../core/system";
 
-@injectable()
-export class MovementSystem implements OnInit {
+@system()
+export class MovementSystem {
 
     constructor(
         private componentManager: ComponentManager,
         private eventManager: EventManager
     ) { }
-
-    onInit() {
-        this.eventManager.message.pipe(filter(message => message instanceof MoveAction)).subscribe(message => {
-            this.onMoveAction(message);
-        });
-
-        this.eventManager.message.pipe(filter(message => message instanceof MoveStartEvent)).subscribe(message => {
-            this.onMoveStartEvent(message);
-        });
-
-        this.eventManager.message.pipe(filter(message => message instanceof MoveEndEvent)).subscribe(message => {
-            this.onMoveEndEvent(message);
-        });
-    }
 
     onMoveAction(action: MoveAction) {
         const actor = action.actor;

@@ -20,26 +20,48 @@ import { Subscription } from "rxjs";
 import { SessionStartEvent } from "./lib/events/sessionStart.event";
 import { SpeechSystem } from "./lib/systems/speech.system";
 import { SayAction } from "./lib/actions/say.action";
+import { SystemManager } from "./core/systemManager";
+import { SessionEndEvent } from "./lib/events/sessionEnd.event";
+import { SayEvent } from "./lib/events/say.event";
+import { MoveStartEvent } from "./lib/events/moveStart.event";
+import { MoveEndEvent } from "./lib/events/moveEnd.event";
 
-@app({
-    world: data,
-    systems: [
-        LookSystem,
-        MovementSystem,
-        SessionSystem,
-        SpeechSystem
-    ]
-})
+@app()
 export class App {
 
     constructor(
         private network: Network,
         private componentManager: ComponentManager,
         private eventManager: EventManager,
-        private sessionManager: SessionManager
+        private sessionManager: SessionManager,
+        private systemManager: SystemManager,
+        private lookSystem: LookSystem,
+        private movementSystem: MovementSystem,
+        private sessionSystem: SessionSystem,
+        private speechSystem: SpeechSystem
     ) { }
 
     onInit() {
+        this.componentManager.load(data);
+
+        this.systemManager.register([
+            {
+                system: this.lookSystem,
+                events: [LookAction]
+            },
+            {
+                system: this.movementSystem,
+                events: [MoveAction, MoveStartEvent, MoveEndEvent]
+            },
+            {
+                system: this.sessionSystem,
+                events: [QuitAction, SessionStartEvent, SessionEndEvent]
+            },
+            {
+                system: this.speechSystem,
+                events: [SayAction, SayEvent]
+            }
+        ]);
 
         this.network.clientConnects.subscribe(client => {
             this.readName(client);

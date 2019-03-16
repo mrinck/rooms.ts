@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { config } from "./config";
-import { OnInit, Entity } from "./api";
+import { OnInit, Entity, WorldData } from "./api";
 import { Component, ComponentType } from "./component";
 
 @injectable()
@@ -11,14 +11,11 @@ export class ComponentManager implements OnInit {
 
     async onInit() {
         this.components = [];
-
-        this.load();
-
-        console.log("[World] loaded");
     }
 
-    private load() {
-        for (const datum of config.world.components) {
+    load(data: WorldData) {
+        console.log("[World] loading");
+        for (const datum of data.components) {
             const componentType = config.componentTypes.find(component => component.name === datum.type);
             if (componentType) {
                 this.addComponent(new componentType(datum.entity, datum.value, this));
@@ -26,6 +23,7 @@ export class ComponentManager implements OnInit {
                 console.log("unknown component", datum.type);
             }
         }
+        console.log("[World] loaded");
     }
 
     createEntity(): Entity {

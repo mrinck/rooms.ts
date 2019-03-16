@@ -1,4 +1,3 @@
-import { injectable } from "inversify";
 import { ComponentManager } from "../../core/componentManager";
 import { LookAction } from "../actions/look.action";
 import { EventManager } from "../../core/eventManager";
@@ -7,24 +6,17 @@ import { LocationComponent } from "../components/location.component";
 import { DescriptionComponent } from "../components/description.component";
 import { NameComponent } from "../components/name.component";
 import { ExitsComponent } from "../components/exits.component";
-import { filter } from "rxjs/operators";
-import { OnInit } from "../../core/api";
 import { LocationUtil } from "../util/location.util";
 import { ExitsUtil } from "../util/exits.util";
+import { system } from "../../core/system";
 
-@injectable()
-export class LookSystem implements OnInit {
+@system()
+export class LookSystem {
 
     constructor(
         private componentManager: ComponentManager,
         private eventManager: EventManager
     ) { }
-
-    onInit() {
-        this.eventManager.message.pipe(filter(message => message instanceof LookAction)).subscribe(message => {
-            this.onLookAction(message as LookAction);
-        });
-    }
 
     onLookAction(action: LookAction) {
         const output: string[] = [];
