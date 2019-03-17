@@ -4,7 +4,7 @@ import { MoveAction } from "../actions/move.action";
 import { LocationComponent } from "../../core/components/location.component";
 import { ExitsComponent } from "../components/exits.component";
 import { LookAction } from "../actions/look.action";
-import { Message } from "../../core/message";
+import { MessageEvent } from "../../core/events/message.event";
 import { MoveStartEvent } from "../events/moveStart.event";
 import { NameComponent } from "../components/name.component";
 import { LocationUtil } from "../util/location.util";
@@ -37,7 +37,7 @@ export class MovementSystem {
                     this.eventManager.send(new MoveEndEvent(actor, target, actorLocation));
                     this.eventManager.send(new LookAction(actor));
                 } else {
-                    this.eventManager.send(new Message(actor, "You can't go in this direction."));
+                    this.eventManager.send(new MessageEvent(actor, "You can't go in this direction."));
                 }
             }
         }
@@ -56,7 +56,7 @@ export class MovementSystem {
         
         for (const child of locationChildren) {
             if (child !== event.actor) {
-                this.eventManager.send(new Message(child, (actorName || "Someone") + " leaves to " + event.direction));
+                this.eventManager.send(new MessageEvent(child, (actorName || "Someone") + " leaves to " + event.direction));
             }
         }
     }
@@ -85,7 +85,7 @@ export class MovementSystem {
 
         for (const child of locationChildren) {
             if (child !== event.actor) {
-                this.eventManager.send(new Message(child, (actorName || "Someone") + " enters from " + (enterDirection || "somewhere")));
+                this.eventManager.send(new MessageEvent(child, (actorName || "Someone") + " enters from " + (enterDirection || "somewhere")));
             }
         }
     }

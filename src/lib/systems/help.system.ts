@@ -1,7 +1,7 @@
 import { system } from "../../core/system";
 import { UnknownAction } from "../actions/unknown.action";
 import { EventManager } from "../../core/eventManager";
-import { Message } from "../../core/message";
+import { MessageEvent } from "../../core/events/message.event";
 import { HelpAction } from "../actions/help.action";
 
 @system()
@@ -20,11 +20,11 @@ export class HelpSystem {
             "Talk:     say <something>\n",
             "End game: quit\n"
         );
-        this.eventManager.send(new Message(action.actor, output.join("")));
+        this.eventManager.send(new MessageEvent(action.actor, output.join("")));
     }
 
     onUnknownAction(action: UnknownAction) {
-        this.eventManager.send(new Message(action.actor, "Unknown command \"" + action.input + "\""));
+        this.eventManager.send(new MessageEvent(action.actor, "Unknown command \"" + action.input + "\""));
     }
 
 }

@@ -11,7 +11,6 @@ import { QuitAction } from "./lib/actions/quit.action";
 import { SessionSystem } from "./lib/systems/session.system";
 import { LookAction } from "./lib/actions/look.action";
 import { LocationComponent } from "./core/components/location.component";
-import { Message } from "./core/message";
 import { NameComponent } from "./lib/components/name.component";
 import { filter, first } from "rxjs/operators";
 import { SessionManager, Session } from "./core/sessionManager";
@@ -29,6 +28,7 @@ import { CommandManager } from "./core/commandManager";
 import { UnknownAction } from "./lib/actions/unknown.action";
 import { HelpSystem } from "./lib/systems/help.system";
 import { HelpAction } from "./lib/actions/help.action";
+import { MessageEvent } from "./core/events/message.event";
 
 @app()
 export class App {
@@ -183,7 +183,7 @@ export class App {
     }
 
     initSession(session: Session) {
-        session.data["messageSubscription"] = this.eventManager.message.pipe(filter(message => message instanceof Message && message.entityId === session.player)).subscribe(message => {
+        session.data["messageSubscription"] = this.eventManager.message.pipe(filter(message => message instanceof MessageEvent && message.entity === session.player)).subscribe(message => {
             session.client.write(message.message);
         });
 

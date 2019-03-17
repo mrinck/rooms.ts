@@ -8,7 +8,7 @@ import { LookAction } from "../actions/look.action";
 import { LocationComponent } from "../../core/components/location.component";
 import { LocationUtil } from "../util/location.util";
 import { NameComponent } from "../components/name.component";
-import { Message } from "../../core/message";
+import { MessageEvent } from "../../core/events/message.event";
 import { system } from "../../core/system";
 
 @system()
@@ -45,7 +45,7 @@ export class SessionSystem {
 
             for (const locationChild of actorLocationChildren) {
                 if (locationChild !== event.actor) {
-                    this.eventManager.send(new Message(locationChild, (actorName || "Someone") + " materializes."));
+                    this.eventManager.send(new MessageEvent(locationChild, (actorName || "Someone") + " materializes."));
                 }
             }
         }
@@ -68,7 +68,7 @@ export class SessionSystem {
 
             for (const locationChild of actorLocationChildren) {
                 if (locationChild !== event.actor) {
-                    this.eventManager.send(new Message(locationChild, (actorName || "Someone") + " disappears."));
+                    this.eventManager.send(new MessageEvent(locationChild, (actorName || "Someone") + " disappears."));
                 }
             }
         }

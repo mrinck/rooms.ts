@@ -5,7 +5,7 @@ import { ComponentManager } from "../../core/componentManager";
 import { NameComponent } from "../components/name.component";
 import { LocationComponent } from "../../core/components/location.component";
 import { LocationUtil } from "../util/location.util";
-import { Message } from "../../core/message";
+import { MessageEvent } from "../../core/events/message.event";
 import { system } from "../../core/system";
 
 @system()
@@ -35,7 +35,7 @@ export class SpeechSystem {
 
             for (const locationChild of actorLocationChildren) {
                 if (locationChild !== event.actor) {
-                    this.eventManager.send(new Message(locationChild, (actorName || "Someone") + " says: " + event.message));
+                    this.eventManager.send(new MessageEvent(locationChild, (actorName || "Someone") + " says: " + event.message));
                 }
             }
         }

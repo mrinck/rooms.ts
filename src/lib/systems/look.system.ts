@@ -1,7 +1,7 @@
 import { ComponentManager } from "../../core/componentManager";
 import { LookAction } from "../actions/look.action";
 import { EventManager } from "../../core/eventManager";
-import { Message } from "../../core/message";
+import { MessageEvent } from "../../core/events/message.event";
 import { LocationComponent } from "../../core/components/location.component";
 import { DescriptionComponent } from "../components/description.component";
 import { NameComponent } from "../components/name.component";
@@ -54,7 +54,7 @@ export class LookSystem {
             output.push("Whiteness");
         }
 
-        this.eventManager.send(new Message(action.actor, output.join('')));
+        this.eventManager.send(new MessageEvent(action.actor, output.join('')));
     }
 
 }
