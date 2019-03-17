@@ -132,8 +132,8 @@ export class App {
     async readName(client: Client) {
         const name = await client.readOnce("Name");
 
-        const currentPlayersComponents = this.componentManager.getAllComponentsOfType(PlayerComponent);
-        const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
+        const presentPlayersComponents = this.componentManager.getAllComponentsOfType(PlayerComponent);
+        const currentPlayerComponent = presentPlayersComponents.find(component => component.value === name);
 
         if (currentPlayerComponent) {
             // player already in world
@@ -195,3 +195,4 @@ export class App {
         });
     }
 }
+
