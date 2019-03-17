@@ -28,6 +28,7 @@ import { MoveEndEvent } from "./lib/events/moveEnd.event";
 import { CommandManager } from "./core/commandManager";
 import { UnknownAction } from "./lib/actions/unknown.action";
 import { HelpSystem } from "./lib/systems/help.system";
+import { HelpAction } from "./lib/actions/help.action";
 
 @app()
 export class App {
@@ -91,6 +92,10 @@ export class App {
                 action: (player, params) => new QuitAction(player)
             },
             {
+                command: "help",
+                action: (player, params) => new HelpAction(player)
+            },
+            {
                 command: ":else",
                 action: (player, params) => new UnknownAction(player, params["else"])
             }
@@ -115,7 +120,7 @@ export class App {
             },
             {
                 system: this.helpSystem,
-                events: [UnknownAction]
+                events: [HelpAction, UnknownAction]
             }
         ]);
 
