@@ -5,7 +5,7 @@ import { SessionEndEvent } from "../events/sessionEnd.event";
 import { ComponentManager } from "../../core/componentManager";
 import { SessionStartEvent } from "../events/sessionStart.event";
 import { LookAction } from "../actions/look.action";
-import { LocationComponent } from "../components/location.component";
+import { LocationComponent } from "../../core/components/location.component";
 import { LocationUtil } from "../util/location.util";
 import { NameComponent } from "../components/name.component";
 import { Message } from "../../core/message";

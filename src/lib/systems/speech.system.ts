@@ -3,7 +3,7 @@ import { EventManager } from "../../core/eventManager";
 import { SayEvent } from "../events/say.event";
 import { ComponentManager } from "../../core/componentManager";
 import { NameComponent } from "../components/name.component";
-import { LocationComponent } from "../components/location.component";
+import { LocationComponent } from "../../core/components/location.component";
 import { LocationUtil } from "../util/location.util";
 import { Message } from "../../core/message";
 import { system } from "../../core/system";

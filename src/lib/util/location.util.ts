@@ -1,6 +1,6 @@
 import { Entity } from "../../core/api";
 import { ComponentManager } from "../../core/componentManager";
-import { LocationComponent } from "../components/location.component";
+import { LocationComponent } from "../../core/components/location.component";
 
 export class LocationUtil {
 

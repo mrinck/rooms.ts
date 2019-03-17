@@ -1,20 +1,20 @@
 import { config } from "./config";
-import { Subject, Observable } from "rxjs";
 import { injectable } from "inversify";
 import { OnInit } from "./api";
+import { EventManager } from "./eventManager";
+import { TickEvent } from "./events/tick.event";
 
 @injectable()
 export class Clock implements OnInit {
-    ticks: Observable<number>;
-
     private running: boolean;
     private time: number;
-    private ticksSubject: Subject<number>;
-    
+
+    constructor(
+        private eventManager: EventManager
+    ) { }
+
     onInit() {
         this.time = 0;
-        this.ticksSubject = new Subject();
-        this.ticks = this.ticksSubject.asObservable();
         this.running = true;
         this.tick();
     }
@@ -24,7 +24,7 @@ export class Clock implements OnInit {
     }
 
     private tick() {
-        this.ticksSubject.next(this.time);
+        this.eventManager.send(new TickEvent(this.time));
         this.time++;
         if (this.running) {
             setTimeout(() => {

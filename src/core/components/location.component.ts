@@ -1,5 +1,5 @@
-import { component, Component } from "../../core/component";
-import { Entity } from "../../core/api";
+import { component, Component } from "../component";
+import { Entity } from "../api";
 
 @component()
 export class LocationComponent extends Component {

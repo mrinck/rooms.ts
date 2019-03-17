@@ -1,7 +1,7 @@
 import { ComponentManager } from "../../core/componentManager";
 import { EventManager } from "../../core/eventManager";
 import { MoveAction } from "../actions/move.action";
-import { LocationComponent } from "../components/location.component";
+import { LocationComponent } from "../../core/components/location.component";
 import { ExitsComponent } from "../components/exits.component";
 import { LookAction } from "../actions/look.action";
 import { Message } from "../../core/message";

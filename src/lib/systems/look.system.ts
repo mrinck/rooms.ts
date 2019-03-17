@@ -2,7 +2,7 @@ import { ComponentManager } from "../../core/componentManager";
 import { LookAction } from "../actions/look.action";
 import { EventManager } from "../../core/eventManager";
 import { Message } from "../../core/message";
-import { LocationComponent } from "../components/location.component";
+import { LocationComponent } from "../../core/components/location.component";
 import { DescriptionComponent } from "../components/description.component";
 import { NameComponent } from "../components/name.component";
 import { ExitsComponent } from "../components/exits.component";
