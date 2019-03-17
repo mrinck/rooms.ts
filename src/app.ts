@@ -25,12 +25,16 @@ import { SessionEndEvent } from "./lib/events/sessionEnd.event";
 import { SayEvent } from "./lib/events/say.event";
 import { MoveStartEvent } from "./lib/events/moveStart.event";
 import { MoveEndEvent } from "./lib/events/moveEnd.event";
+import { CommandManager } from "./core/commandManager";
+import { UnknownAction } from "./lib/actions/unknown.action";
+import { HelpSystem } from "./lib/systems/help.system";
 
 @app()
 export class App {
 
     constructor(
         private network: Network,
+        private commandManager: CommandManager,
         private componentManager: ComponentManager,
         private eventManager: EventManager,
         private sessionManager: SessionManager,
@@ -38,13 +42,61 @@ export class App {
         private lookSystem: LookSystem,
         private movementSystem: MovementSystem,
         private sessionSystem: SessionSystem,
-        private speechSystem: SpeechSystem
+        private speechSystem: SpeechSystem,
+        private helpSystem: HelpSystem
     ) { }
 
     onInit() {
         this.componentManager.load(data);
 
-        this.systemManager.register([
+        this.commandManager.configure([
+            {
+                command: "l[ook]",
+                action: (player, params) => new LookAction(player)
+            },
+            {
+                command: "n[orth]",
+                action: (player, params) => new MoveAction(player, "north")
+            },
+            {
+                command: "e[ast]",
+                action: (player, params) => new MoveAction(player, "east")
+            },
+            {
+                command: "s[outh]",
+                action: (player, params) => new MoveAction(player, "south")
+            },
+            {
+                command: "w[est]",
+                action: (player, params) => new MoveAction(player, "west")
+            },
+            {
+                command: "u[p]",
+                action: (player, params) => new MoveAction(player, "up")
+            },
+            {
+                command: "d[own]",
+                action: (player, params) => new MoveAction(player, "down")
+            },
+            {
+                command: "go [to] [the] :direction",
+                action: (player, params) => new MoveAction(player, params["direction"])
+            },
+            {
+                command: "say :message",
+                action: (player, params) => new SayAction(player, params["message"])
+            },
+            {
+                command: "quit",
+                action: (player, params) => new QuitAction(player)
+            },
+            {
+                command: ":else",
+                action: (player, params) => new UnknownAction(player, params["else"])
+            }
+        ]);
+
+        this.systemManager.configure([
             {
                 system: this.lookSystem,
                 events: [LookAction]
@@ -60,6 +112,10 @@ export class App {
             {
                 system: this.speechSystem,
                 events: [SayAction, SayEvent]
+            },
+            {
+                system: this.helpSystem,
+                events: [UnknownAction]
             }
         ]);
 
@@ -75,17 +131,17 @@ export class App {
         const currentPlayerComponent = currentPlayersComponents.find(component => component.value === name);
 
         if (currentPlayerComponent) {
-            // ALREADY IN WORLD
+            // player already in world
             const currentPlayer = currentPlayerComponent.entity;
             const currentPlayerSession = this.sessionManager.getSessionForPlayer(currentPlayer);
 
             if (currentPlayerSession) {
                 if (currentPlayerSession.client.isAlive()) {
-                    // already connected
+                    // connection active. bye.
                     client.write("Already connected.");
                     client.disconnect();
                 } else {
-                    // reconnect
+                    // connection dead. reconnect.
                     client.write("Reconnected.");
                     currentPlayerSession.get<Subscription>("messageSubscription").unsubscribe();
                     currentPlayerSession.get<Subscription>("inputSubscription").unsubscribe();
@@ -128,47 +184,8 @@ export class App {
 
         session.data["inputSubscription"] = session.client.messages.subscribe(input => {
             input = input.trim();
-
-            switch (input.split(" ")[0]) {
-                case "quit":
-                    this.eventManager.send(new QuitAction(session.player));
-                    break;
-
-                case "l":
-                case "look":
-                    this.eventManager.send(new LookAction(session.player));
-                    break;
-
-                case "n":
-                case "north":
-                    this.eventManager.send(new MoveAction(session.player, "north"));
-                    break;
-
-                case "e":
-                case "east":
-                    this.eventManager.send(new MoveAction(session.player, "east"));
-                    break;
-
-                case "s":
-                case "south":
-                    this.eventManager.send(new MoveAction(session.player, "south"));
-                    break;
-
-                case "w":
-                case "west":
-                    this.eventManager.send(new MoveAction(session.player, "west"));
-                    break;
-
-                case "say":
-                    const message = input.substr(4);
-                    this.eventManager.send(new SayAction(session.player, message));
-                    break;
-
-                default:
-                    if (input.length > 0) {
-                        session.client.write("Unknown command: " + input);
-                    }
-                    break;
+            if (input.length > 0) {
+                this.commandManager.parse(session.player, input);
             }
         });
     }

@@ -8,11 +8,13 @@ import { Clock } from "./clock";
 import { EventManager } from "./eventManager";
 import { SessionManager } from "./sessionManager";
 import { SystemManager } from "./systemManager";
+import { CommandManager } from "./commandManager";
 
 const container = new Container();
 const services: any[] = [
     Logger,
     EventManager,
+    CommandManager,
     Clock,
     ComponentManager,
     SessionManager,

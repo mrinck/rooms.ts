@@ -15,7 +15,7 @@ export class SystemManager implements OnInit {
         this.eventSystemMap = new Map();
     }
 
-    register(systemConfigs: SystemConfig[]) {
+    configure(systemConfigs: SystemConfig[]) {
         for (const systemConfig of systemConfigs) {
             this.registerSystem(systemConfig);
         }
