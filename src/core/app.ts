@@ -9,6 +9,7 @@ import { EventManager } from "./eventManager";
 import { SessionManager } from "./sessionManager";
 import { SystemManager } from "./systemManager";
 import { CommandManager } from "./commandManager";
+import { LookRenderer } from "../lib/renderers/look.renderer";
 
 const container = new Container();
 const services: any[] = [
@@ -19,7 +20,9 @@ const services: any[] = [
     ComponentManager,
     SessionManager,
     SystemManager,
-    Network
+    Network,
+
+    LookRenderer
 ];
 
 export function app() {

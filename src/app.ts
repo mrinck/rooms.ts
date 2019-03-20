@@ -20,10 +20,6 @@ import { SessionStartEvent } from "./lib/events/sessionStart.event";
 import { SpeechSystem } from "./lib/systems/speech.system";
 import { SayAction } from "./lib/actions/say.action";
 import { SystemManager } from "./core/systemManager";
-import { SessionEndEvent } from "./lib/events/sessionEnd.event";
-import { SayEvent } from "./lib/events/say.event";
-import { MoveStartEvent } from "./lib/events/moveStart.event";
-import { MoveEndEvent } from "./lib/events/moveEnd.event";
 import { CommandManager } from "./core/commandManager";
 import { UnknownAction } from "./lib/actions/unknown.action";
 import { HelpSystem } from "./lib/systems/help.system";
@@ -103,24 +99,28 @@ export class App {
 
         this.systemManager.configure([
             {
-                system: this.lookSystem,
-                events: [LookAction]
+                action: LookAction,
+                handlers: [this.lookSystem]
             },
             {
-                system: this.movementSystem,
-                events: [MoveAction, MoveStartEvent, MoveEndEvent]
+                action: MoveAction,
+                handlers: [this.movementSystem]
             },
             {
-                system: this.sessionSystem,
-                events: [QuitAction, SessionStartEvent, SessionEndEvent]
+                action: QuitAction,
+                handlers: [this.sessionSystem]
             },
             {
-                system: this.speechSystem,
-                events: [SayAction, SayEvent]
+                action: SayAction,
+                handlers: [this.speechSystem]
             },
             {
-                system: this.helpSystem,
-                events: [HelpAction, UnknownAction]
+                action: HelpAction,
+                handlers: [this.helpSystem]
+            },
+            {
+                action: UnknownAction,
+                handlers: [this.helpSystem]
             }
         ]);
 

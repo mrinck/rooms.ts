@@ -11,7 +11,7 @@ export class HelpSystem {
         private eventManager: EventManager
     ) { }
 
-    onHelpAction(action: HelpAction) {
+    onHelp(action: HelpAction) {
         const output: string[] = [];
         output.push(
             "\n",
@@ -23,7 +23,7 @@ export class HelpSystem {
         this.eventManager.send(new MessageEvent(action.actor, output.join("")));
     }
 
-    onUnknownAction(action: UnknownAction) {
+    onUnknown(action: UnknownAction) {
         this.eventManager.send(new MessageEvent(action.actor, "Unknown command \"" + action.input + "\""));
     }
 

@@ -1,14 +1,14 @@
 import { injectable } from "inversify";
 import { Parser } from "./parser";
 import { OnInit, Entity } from "./api";
-import { EventManager } from "./eventManager";
+import { SystemManager } from "./systemManager";
 
 @injectable()
 export class CommandManager implements OnInit {
     commandParsers: CommandParser[];
 
     constructor(
-        private eventManager: EventManager
+        private systemManager: SystemManager
     ) { }
 
     onInit() {
@@ -34,7 +34,7 @@ export class CommandManager implements OnInit {
             const result = commandParser.parser.match(input);
             if (result.matching) {
                 const action = commandParser.action(player, result.params);
-                this.eventManager.send(action);
+                this.systemManager.execute(action);
                 return;
             }
         }
