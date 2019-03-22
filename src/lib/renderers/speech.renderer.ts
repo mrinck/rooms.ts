@@ -4,7 +4,6 @@ import { EventManager } from "../../core/eventManager";
 import { SayEvent } from "../events/say.event";
 import { NameComponent } from "../components/name.component";
 import { LocationComponent } from "../../core/components/location.component";
-import { LocationUtil } from "../util/location.util";
 import { MessageEvent } from "../../core/events/message.event";
 
 @injectable()
@@ -26,7 +25,7 @@ export class SpeechRenderer {
         const actorLocationComponent = this.componentManager.getComponent(event.actor, LocationComponent);
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
-            const actorLocationChildren = LocationUtil.getLocationChildren(actorLocation, this.componentManager);
+            const actorLocationChildren = LocationComponent.getChildren(actorLocation, this.componentManager);
 
             for (const locationChild of actorLocationChildren) {
                 if (locationChild !== event.actor) {

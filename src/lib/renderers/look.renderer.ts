@@ -6,9 +6,7 @@ import { filter } from "rxjs/operators";
 import { ComponentManager } from "../../core/componentManager";
 import { LocationComponent } from "../../core/components/location.component";
 import { DescriptionComponent } from "../components/description.component";
-import { LocationUtil } from "../util/location.util";
 import { NameComponent } from "../components/name.component";
-import { ExitsUtil } from "../util/exits.util";
 import { MessageEvent } from "../../core/events/message.event";
 import { ExitsComponent } from "../components/exits.component";
 
@@ -40,7 +38,7 @@ export class LookRenderer implements OnInit {
                 output.push(actorLocationDescription + "\n");
             }
 
-            const actorLocationChildren = LocationUtil.getLocationChildren(actorLocation, this.componentManager);
+            const actorLocationChildren = LocationComponent.getChildren(actorLocation, this.componentManager);
 
             for (const content of actorLocationChildren) {
                 if (content != actor) {
@@ -54,7 +52,7 @@ export class LookRenderer implements OnInit {
             const actorLocationExitsComponent = this.componentManager.getComponent(actorLocation, ExitsComponent);
 
             if (actorLocationExitsComponent) {
-                output.push("Exits: " + ExitsUtil.getExitsComponentDirections(actorLocationExitsComponent).join(', ') + "\n");
+                output.push("Exits: " + ExitsComponent.getDirections(actorLocationExitsComponent).join(', ') + "\n");
             }
         } else {
             output.push("Whiteness");

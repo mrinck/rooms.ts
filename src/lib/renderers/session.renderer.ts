@@ -4,7 +4,6 @@ import { EventManager } from "../../core/eventManager";
 import { SessionStartEvent } from "../events/sessionStart.event";
 import { NameComponent } from "../components/name.component";
 import { LocationComponent } from "../../core/components/location.component";
-import { LocationUtil } from "../util/location.util";
 import { MessageEvent } from "../../core/events/message.event";
 import { LookEvent } from "../events/look.event";
 import { SessionEndEvent } from "../events/sessionEnd.event";
@@ -28,7 +27,7 @@ export class SessionRenderer {
         const actorLocationComponent = this.componentManager.getComponent(event.actor, LocationComponent);
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
-            const actorLocationChildren = LocationUtil.getLocationChildren(actorLocation, this.componentManager);
+            const actorLocationChildren = LocationComponent.getChildren(actorLocation, this.componentManager);
 
             for (const locationChild of actorLocationChildren) {
                 if (locationChild !== event.actor) {
@@ -51,7 +50,7 @@ export class SessionRenderer {
         const actorLocationComponent = this.componentManager.getComponent(event.actor, LocationComponent);
         if (actorLocationComponent) {
             const actorLocation = actorLocationComponent.value;
-            const actorLocationChildren = LocationUtil.getLocationChildren(actorLocation, this.componentManager);
+            const actorLocationChildren = LocationComponent.getChildren(actorLocation, this.componentManager);
 
             for (const locationChild of actorLocationChildren) {
                 if (locationChild !== event.actor) {

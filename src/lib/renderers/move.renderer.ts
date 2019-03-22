@@ -2,12 +2,11 @@ import { MoveStartEvent } from "../events/moveStart.event";
 import { injectable } from "inversify";
 import { ComponentManager } from "../../core/componentManager";
 import { NameComponent } from "../components/name.component";
-import { LocationUtil } from "../util/location.util";
 import { EventManager } from "../../core/eventManager";
 import { MessageEvent } from "../../core/events/message.event";
 import { MoveEndEvent } from "../events/moveEnd.event";
 import { ExitsComponent } from "../components/exits.component";
-import { ExitsUtil } from "../util/exits.util";
+import { LocationComponent } from "../../core/components/location.component";
 
 @injectable()
 export class MoveRenderer {
@@ -26,7 +25,7 @@ export class MoveRenderer {
             actorName = actorNameComponent.value;
         }
         
-        const locationChildren = LocationUtil.getLocationChildren(event.location, this.componentManager);
+        const locationChildren = LocationComponent.getChildren(event.location, this.componentManager);
         
         for (const child of locationChildren) {
             if (child !== event.actor) {
@@ -48,14 +47,14 @@ export class MoveRenderer {
         const locationExitsComponent = this.componentManager.getComponent(event.location, ExitsComponent);
 
         if (locationExitsComponent) {
-            const direction = ExitsUtil.getExitsComponentDirectionForTarget(locationExitsComponent, event.startLocation);
+            const direction = ExitsComponent.getDirectionForTarget(locationExitsComponent, event.startLocation);
             
             if (direction) {
                 enterDirection = direction;
             }
         }
         
-        const locationChildren = LocationUtil.getLocationChildren(event.location, this.componentManager);
+        const locationChildren = LocationComponent.getChildren(event.location, this.componentManager);
 
         for (const child of locationChildren) {
             if (child !== event.actor) {
