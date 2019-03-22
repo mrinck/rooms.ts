@@ -22,11 +22,12 @@ export class SystemManager implements OnInit {
                 const systems = this.actionHandlerMap.get(actionClass);
                 if (systems) {
                     for (const system of systems) {
-                        const actionName = action.constructor.name.replace(/Action$/, "");
-                        const listenerName = "on" + actionName.charAt(0).toUpperCase() + actionName.slice(1);
-                        console.log("listener Name", listenerName);
-                        if (system[listenerName]) {
-                            system[listenerName](action);
+                        if (!action.prevented) {
+                            const actionName = action.constructor.name.replace(/Action$/, "");
+                            const listenerName = "on" + actionName.charAt(0).toUpperCase() + actionName.slice(1);
+                            if (system[listenerName]) {
+                                system[listenerName](action);
+                            }
                         }
                     }
                 }
