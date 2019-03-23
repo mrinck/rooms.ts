@@ -97,32 +97,41 @@ export class App {
             }
         ]);
 
-        this.systemManager.configure([
-            {
-                action: LookAction,
-                handlers: [this.lookSystem]
-            },
-            {
-                action: MoveAction,
-                handlers: [this.movementSystem]
-            },
-            {
-                action: QuitAction,
-                handlers: [this.sessionSystem]
-            },
-            {
-                action: SayAction,
-                handlers: [this.speechSystem]
-            },
-            {
-                action: HelpAction,
-                handlers: [this.helpSystem]
-            },
-            {
-                action: UnknownAction,
-                handlers: [this.helpSystem]
-            }
-        ]);
+        this.systemManager.configure({
+            systems: [
+                this.lookSystem,
+                this.sessionSystem,
+                this.movementSystem,
+                this.speechSystem,
+                this.helpSystem
+            ],
+            actionHandlers: [
+                {
+                    action: LookAction,
+                    handlers: [this.lookSystem]
+                },
+                {
+                    action: MoveAction,
+                    handlers: [this.movementSystem]
+                },
+                {
+                    action: QuitAction,
+                    handlers: [this.sessionSystem]
+                },
+                {
+                    action: SayAction,
+                    handlers: [this.speechSystem]
+                },
+                {
+                    action: HelpAction,
+                    handlers: [this.helpSystem]
+                },
+                {
+                    action: UnknownAction,
+                    handlers: [this.helpSystem]
+                }
+            ]
+        });
 
         this.network.clientConnects.subscribe(client => {
             this.readName(client);

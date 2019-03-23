@@ -6,9 +6,9 @@ import { ExitsComponent } from "../components/exits.component";
 import { LookAction } from "../actions/look.action";
 import { MessageEvent } from "../../core/events/message.event";
 import { system } from "../../core/system";
-import { MoveEvent } from "../events/move.event";
 import { SystemManager } from "../../core/systemManager";
 import { NameComponent } from "../components/name.component";
+import { MoveEvent } from "../events/move.event";
 
 @system()
 export class MovementSystem {
@@ -28,7 +28,7 @@ export class MovementSystem {
      * - the target exitsComponent must include the start location
      */
 
-    onMove(action: MoveAction) {
+    onMoveAction(action: MoveAction) {
         const actor = action.actor;
         const leaveDirection = action.direction;
         const actorLocationComponent = this.componentManager.getComponent(actor, LocationComponent);
@@ -49,8 +49,8 @@ export class MovementSystem {
                         actorLocationComponent.value = targetLocation;
                         
                         const moveEvent = new MoveEvent(actor, startLocation, leaveDirection, targetLocation, enterDirection);
-                        this.notifyStartLocationChildren(moveEvent);
-                        this.notifyTargetLocationChildren(moveEvent)
+                        this.eventManager.send(moveEvent);
+
                         this.systemManager.execute(new LookAction(actor));
                         return;
                     }
@@ -62,18 +62,17 @@ export class MovementSystem {
         this.eventManager.send(new MessageEvent(actor, "You can't go in this direction."));
     }
 
-    private notifyStartLocationChildren(event: MoveEvent) {
-        let actorName: string;
+    onMoveEvent(event: MoveEvent) {
+        let actorName = "Someone";
 
         const actorNameComponent = this.componentManager.getComponent(event.actor, NameComponent);
 
         if (actorNameComponent) {
             actorName = actorNameComponent.value;
-        } else {
-            actorName = "Someone";
         }
 
-        const startLocationChildren = LocationComponent.getChildren(event.startLocation, this.componentManager)
+        // notify start location children
+        const startLocationChildren = LocationComponent.getChildren(event.startLocation, this.componentManager);
 
         for (const startLocationChild of startLocationChildren) {
             if (startLocationChild !== event.actor) {
@@ -81,20 +80,9 @@ export class MovementSystem {
                 this.eventManager.send(new MessageEvent(startLocationChild, message));
             }
         }
-    }
 
-    private notifyTargetLocationChildren(event: MoveEvent) {
-        let actorName: string;
-
-        const actorNameComponent = this.componentManager.getComponent(event.actor, NameComponent);
-
-        if (actorNameComponent) {
-            actorName = actorNameComponent.value;
-        } else {
-            actorName = "Someone";
-        }
-
-        const targetLocationChildren = LocationComponent.getChildren(event.targetLocation, this.componentManager)
+        // notify target location children
+        const targetLocationChildren = LocationComponent.getChildren(event.targetLocation, this.componentManager);
 
         for (const targetLocationChild of targetLocationChildren) {
             if (targetLocationChild !== event.actor) {

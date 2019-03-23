@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { config } from "./config";
-import { Container, decorate, injectable } from "inversify";
+import { Container, decorate, injectable, interfaces } from "inversify";
 import { Logger } from "./logger";
 import { Network } from "./network";
 import { ComponentManager } from "./componentManager";
@@ -9,7 +9,6 @@ import { EventManager } from "./eventManager";
 import { SessionManager } from "./sessionManager";
 import { SystemManager } from "./systemManager";
 import { CommandManager } from "./commandManager";
-import { LookRenderer } from "../lib/renderers/look.renderer";
 
 const container = new Container();
 const services: any[] = [
@@ -20,9 +19,7 @@ const services: any[] = [
     ComponentManager,
     SessionManager,
     SystemManager,
-    Network,
-
-    LookRenderer
+    Network
 ];
 
 export function app() {
@@ -36,15 +33,15 @@ export function app() {
         services.push(appClass);
 
         for (const service of services) {
-            container.bind(service).toSelf().inSingletonScope();
+            container.bind(service).toSelf().inSingletonScope().onActivation((context: interfaces.Context, instance: any) => {
+                if (instance.onInit) {
+                    instance.onInit();
+                }
+                return instance;
+            });
         }
 
-        for (const service of services) {
-            const instance = container.get<any>(service);
-            if (instance.onInit) {
-                instance.onInit();
-            }
-        }
+        container.get(appClass);
     }
 }
 
