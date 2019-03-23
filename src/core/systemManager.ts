@@ -49,11 +49,9 @@ export class SystemManager implements OnInit {
         this.actionHandlerMap.set(actionConfig.action, actionConfig.handlers);
     }
 
-    handle(event: any) {
+    private handle(event: any) {
         const eventName = event.constructor.name;
         const listenerName = "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
-
-        console.log("handling", eventName, "via", listenerName);
 
         for (const system of this.systems) {
             if (system[listenerName]) {
@@ -73,3 +71,4 @@ export interface ActionConfig {
     action: ActionClass;
     handlers: any[];
 }
+

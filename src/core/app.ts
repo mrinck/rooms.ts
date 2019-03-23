@@ -41,7 +41,9 @@ export function app() {
             });
         }
 
-        container.get(appClass);
+        for (const service of services) {
+            container.get(service);
+        }
     }
 }
 
