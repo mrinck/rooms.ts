@@ -8,7 +8,8 @@ import { MessageEvent } from "../../core/events/message.event";
 import { system } from "../../core/system";
 import { SystemManager } from "../../core/systemManager";
 import { NameComponent } from "../components/name.component";
-import { MoveEvent } from "../events/move.event";
+import { MoveStartEvent } from "../events/moveStart.event";
+import { MoveEndEvent } from "../events/moveEnd.event";
 
 @system()
 export class MovementSystem {
@@ -48,9 +49,8 @@ export class MovementSystem {
                         // Success
                         actorLocationComponent.value = targetLocation;
                         
-                        const moveEvent = new MoveEvent(actor, startLocation, leaveDirection, targetLocation, enterDirection);
-                        this.eventManager.send(moveEvent);
-
+                        this.eventManager.send(new MoveStartEvent(actor, startLocation, leaveDirection));
+                        this.eventManager.send(new MoveEndEvent(actor, targetLocation, enterDirection));
                         this.systemManager.execute(new LookAction(actor));
                         return;
                     }
@@ -62,16 +62,14 @@ export class MovementSystem {
         this.eventManager.send(new MessageEvent(actor, "You can't go in this direction."));
     }
 
-    onMoveEvent(event: MoveEvent) {
+    onMoveStartEvent(event: MoveStartEvent) {
         let actorName = "Someone";
-
         const actorNameComponent = this.componentManager.getComponent(event.actor, NameComponent);
 
         if (actorNameComponent) {
             actorName = actorNameComponent.value;
         }
 
-        // notify start location children
         const startLocationChildren = LocationComponent.getChildren(event.startLocation, this.componentManager);
 
         for (const startLocationChild of startLocationChildren) {
@@ -80,8 +78,16 @@ export class MovementSystem {
                 this.eventManager.send(new MessageEvent(startLocationChild, message));
             }
         }
+    }
 
-        // notify target location children
+    onMoveEndEvent(event: MoveEndEvent) {
+        let actorName = "Someone";
+        const actorNameComponent = this.componentManager.getComponent(event.actor, NameComponent);
+
+        if (actorNameComponent) {
+            actorName = actorNameComponent.value;
+        }
+
         const targetLocationChildren = LocationComponent.getChildren(event.targetLocation, this.componentManager);
 
         for (const targetLocationChild of targetLocationChildren) {
