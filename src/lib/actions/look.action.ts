@@ -8,3 +8,7 @@ export class LookAction extends Action {
         super();
     }
 }
+
+export interface OnLookAction {
+    onLookAction(action: LookAction): void;
+}

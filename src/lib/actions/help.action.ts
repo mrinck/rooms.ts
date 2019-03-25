@@ -8,3 +8,7 @@ export class HelpAction extends Action {
         super();
     }
 }
+
+export interface OnHelpAction {
+    onHelpAction(action: HelpAction): void;
+}

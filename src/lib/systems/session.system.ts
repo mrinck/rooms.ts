@@ -1,4 +1,4 @@
-import { QuitAction } from "../actions/quit.action";
+import { QuitAction, OnQuitAction } from "../actions/quit.action";
 import { SessionManager } from "../../core/sessionManager";
 import { EventManager } from "../../core/eventManager";
 import { SessionEndEvent } from "../events/sessionEnd.event";
@@ -11,7 +11,7 @@ import { MessageEvent } from "../../core/events/message.event";
 import { LookEvent } from "../events/look.event";
 
 @system()
-export class SessionSystem {
+export class SessionSystem implements OnQuitAction {
 
     constructor(
         private eventManager: EventManager,

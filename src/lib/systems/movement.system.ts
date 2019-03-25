@@ -1,6 +1,6 @@
 import { ComponentManager } from "../../core/componentManager";
 import { EventManager } from "../../core/eventManager";
-import { MoveAction } from "../actions/move.action";
+import { MoveAction, OnMoveAction } from "../actions/move.action";
 import { LocationComponent } from "../../core/components/location.component";
 import { ExitsComponent } from "../components/exits.component";
 import { LookAction } from "../actions/look.action";
@@ -12,7 +12,7 @@ import { MoveStartEvent } from "../events/moveStart.event";
 import { MoveEndEvent } from "../events/moveEnd.event";
 
 @system()
-export class MovementSystem {
+export class MovementSystem implements OnMoveAction {
 
     constructor(
         private componentManager: ComponentManager,

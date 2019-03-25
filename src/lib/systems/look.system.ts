@@ -1,4 +1,4 @@
-import { LookAction } from "../actions/look.action";
+import { LookAction, OnLookAction } from "../actions/look.action";
 import { EventManager } from "../../core/eventManager";
 import { system } from "../../core/system";
 import { ComponentManager } from "../../core/componentManager";
@@ -9,7 +9,7 @@ import { ExitsComponent } from "../components/exits.component";
 import { MessageEvent } from "../../core/events/message.event";
 
 @system()
-export class LookSystem {
+export class LookSystem implements OnLookAction {
 
     constructor(
         private eventManager: EventManager,

@@ -1,4 +1,4 @@
-import { SayAction } from "../actions/say.action";
+import { SayAction, OnSayAction } from "../actions/say.action";
 import { EventManager } from "../../core/eventManager";
 import { SayEvent } from "../events/say.event";
 import { ComponentManager } from "../../core/componentManager";
@@ -6,10 +6,9 @@ import { system } from "../../core/system";
 import { NameComponent } from "../components/name.component";
 import { LocationComponent } from "../../core/components/location.component";
 import { MessageEvent } from "../../core/events/message.event";
-import { MoveAction } from "../actions/move.action";
 
 @system()
-export class SpeechSystem {
+export class SpeechSystem implements OnSayAction {
 
     constructor(
         private eventManager: EventManager,

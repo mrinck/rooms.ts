@@ -9,3 +9,7 @@ export class SayAction extends Action {
         super();
     }
 }
+
+export interface OnSayAction {
+    onSayAction(action: SayAction): void;
+}

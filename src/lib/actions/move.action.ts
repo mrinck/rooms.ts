@@ -9,3 +9,7 @@ export class MoveAction extends Action {
         super();
     }
 }
+
+export interface OnMoveAction {
+    onMoveAction(action: MoveAction): void;
+}

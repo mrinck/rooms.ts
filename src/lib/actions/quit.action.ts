@@ -8,3 +8,7 @@ export class QuitAction extends Action {
         super();
     }
 }
+
+export interface OnQuitAction {
+    onQuitAction(action: QuitAction): void;
+}

@@ -1,11 +1,11 @@
 import { system } from "../../core/system";
-import { UnknownAction } from "../actions/unknown.action";
+import { UnknownAction, OnUnknownAction } from "../actions/unknown.action";
 import { EventManager } from "../../core/eventManager";
 import { MessageEvent } from "../../core/events/message.event";
-import { HelpAction } from "../actions/help.action";
+import { HelpAction, OnHelpAction } from "../actions/help.action";
 
 @system()
-export class HelpSystem {
+export class HelpSystem implements OnHelpAction, OnUnknownAction {
 
     constructor(
         private eventManager: EventManager

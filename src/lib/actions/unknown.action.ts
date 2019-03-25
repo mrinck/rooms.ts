@@ -9,3 +9,7 @@ export class UnknownAction extends Action {
         super();
     }
 }
+
+export interface OnUnknownAction {
+    onUnknownAction(action: UnknownAction): void;
+}
