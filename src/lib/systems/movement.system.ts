@@ -22,11 +22,11 @@ export class MovementSystem {
 
     /**
      * To make a move action succeed, following criteria must be met:
-     * - the action's actor must have a LocationComponent
-     * - the start location must have a ExitsComponent
-     * - the start ExitsComponent must include the action's direction
-     * - the target location must have a ExitsComponent
-     * - the target exitsComponent must include the start location
+     * 1. the action's actor must have a LocationComponent
+     * 2. the start location must have a ExitsComponent
+     * 3. the start ExitsComponent must include the action's direction
+     * 4. the target location must have a ExitsComponent
+     * 5. the target exitsComponent must include the start location
      */
 
     onMoveAction(action: MoveAction) {
