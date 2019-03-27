@@ -25,6 +25,17 @@
             ]
         },
         {
+            "type": "DetailsComponent",
+            "entity": "1",
+            "value": [
+                {
+                    "name": "Hering",
+                    "aliases": [],
+                    "description": "A beautiful red hering."
+                }
+            ]
+        },
+        {
             "type": "NameComponent",
             "entity": "2",
             "value": "Room 2"

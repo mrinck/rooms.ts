@@ -9,7 +9,7 @@ export class ComponentManager implements OnInit {
 
     constructor() { }
 
-    async onInit() {
+    onInit() {
         this.components = [];
     }
 

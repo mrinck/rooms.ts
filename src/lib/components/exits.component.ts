@@ -40,4 +40,17 @@ export class ExitsComponent extends Component {
     static getTargets(exitsComponent: ExitsComponent): Entity[] {
         return exitsComponent.value.map(exit => exit.target);
     }
+
+    static getOppositeDirection(direction: string): string | undefined {
+        switch (direction) {
+            case "north":
+                return "south";
+            case "east":
+                return "west";
+            case "south":
+                return "north";
+            case "west":
+                return "east";
+        }
+    }
 }

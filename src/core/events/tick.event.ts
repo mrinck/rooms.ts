@@ -1,5 +1,5 @@
 export class TickEvent {
     constructor(
-        public tick: number
+        public time: number
     ) { }
 }

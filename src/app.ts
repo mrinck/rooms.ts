@@ -25,9 +25,14 @@ import { UnknownAction } from "./lib/actions/unknown.action";
 import { HelpSystem } from "./lib/systems/help.system";
 import { HelpAction } from "./lib/actions/help.action";
 import { MessageEvent } from "./core/events/message.event";
+import { OnInit } from "./core/api";
+import { ExamineAction } from "./lib/actions/examine.action";
+import { ShutdownAction } from "./lib/actions/shutdown.action";
+import { DigAction } from "./lib/actions/dig.action";
+import { CreationSystem } from "./lib/systems/creation.system";
 
 @app()
-export class App {
+export class App implements OnInit {
 
     constructor(
         private network: Network,
@@ -40,17 +45,14 @@ export class App {
         private movementSystem: MovementSystem,
         private sessionSystem: SessionSystem,
         private speechSystem: SpeechSystem,
-        private helpSystem: HelpSystem
+        private helpSystem: HelpSystem,
+        private creationSystem: CreationSystem
     ) { }
 
     onInit() {
         this.componentManager.load(data);
 
         this.commandManager.configure([
-            {
-                command: "l[ook]",
-                action: (player, params) => new LookAction(player)
-            },
             {
                 command: "n[orth]",
                 action: (player, params) => new MoveAction(player, "north")
@@ -80,7 +82,19 @@ export class App {
                 action: (player, params) => new MoveAction(player, params["direction"])
             },
             {
+                command: "l[ook]",
+                action: (player, params) => new LookAction(player)
+            },
+            {
+                command: "(examine|look at) [the] :target",
+                action: (player, params) => new ExamineAction(player, params["target"])
+            },
+            {
                 command: "say :message",
+                action: (player, params) => new SayAction(player, params["message"])
+            },
+            {
+                command: "::message",
                 action: (player, params) => new SayAction(player, params["message"])
             },
             {
@@ -90,6 +104,14 @@ export class App {
             {
                 command: "help",
                 action: (player, params) => new HelpAction(player)
+            },
+            {
+                command: "shutdown",
+                action: (player, params) => new ShutdownAction(player)
+            },
+            {
+                command: "dig :direction",
+                action: (player, params) => new DigAction(player, params["direction"])
             },
             {
                 command: ":else",
@@ -103,9 +125,14 @@ export class App {
                 this.sessionSystem,
                 this.movementSystem,
                 this.speechSystem,
-                this.helpSystem
+                this.helpSystem,
+                this.creationSystem
             ],
             actionHandlers: [
+                {
+                    action: ExamineAction,
+                    handlers: [this.lookSystem]
+                },
                 {
                     action: LookAction,
                     handlers: [this.lookSystem]
@@ -125,6 +152,14 @@ export class App {
                 {
                     action: HelpAction,
                     handlers: [this.helpSystem]
+                },
+                {
+                    action: ShutdownAction,
+                    handlers: [this.sessionSystem]
+                },
+                {
+                    action: DigAction,
+                    handlers: [this.creationSystem]
                 },
                 {
                     action: UnknownAction,

@@ -7,9 +7,10 @@ import { DescriptionComponent } from "../components/description.component";
 import { NameComponent } from "../components/name.component";
 import { ExitsComponent } from "../components/exits.component";
 import { MessageEvent } from "../../core/events/message.event";
+import { OnExamineAction, ExamineAction } from "../actions/examine.action";
 
 @system()
-export class LookSystem implements OnLookAction {
+export class LookSystem implements OnLookAction, OnExamineAction {
 
     constructor(
         private eventManager: EventManager,
@@ -30,12 +31,14 @@ export class LookSystem implements OnLookAction {
             if (actorLocationDescriptionComponent) {
                 const actorLocationDescription = actorLocationDescriptionComponent.value;
                 output.push(actorLocationDescription + "\n");
+            } else {
+                output.push("Inside @" + actorLocation + "\n");
             }
 
             const actorLocationChildren = LocationComponent.getChildren(actorLocation, this.componentManager);
 
             for (const content of actorLocationChildren) {
-                if (content != actor) {
+                if (content !== actor) {
                     const contentNameComponent = this.componentManager.getComponent(content, NameComponent);
                     if (contentNameComponent) {
                         output.push(contentNameComponent.value + " is here. \n");
@@ -53,5 +56,9 @@ export class LookSystem implements OnLookAction {
         }
 
         this.eventManager.send(new MessageEvent(action.actor, output.join('')));
+    }
+
+    onExamineAction(action: ExamineAction) {
+        console.log("EXAMINING", action.target);
     }
 }

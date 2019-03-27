@@ -9,14 +9,17 @@ import { NameComponent } from "../components/name.component";
 import { LocationComponent } from "../../core/components/location.component";
 import { MessageEvent } from "../../core/events/message.event";
 import { LookEvent } from "../events/look.event";
+import { OnShutdownAction, ShutdownAction } from "../actions/shutdown.action";
+import { Network } from "../../core/network";
 
 @system()
-export class SessionSystem implements OnQuitAction {
+export class SessionSystem implements OnQuitAction, OnShutdownAction {
 
     constructor(
         private eventManager: EventManager,
         private sessionManager: SessionManager,
-        private componentManager: ComponentManager
+        private componentManager: ComponentManager,
+        private network: Network
     ) {}
 
     onQuitAction(action: QuitAction) {
@@ -27,6 +30,10 @@ export class SessionSystem implements OnQuitAction {
         if (session) {
             session.destroy();
         }
+    }
+
+    onShutdownAction(action: ShutdownAction) {
+        this.network.stop();
     }
 
     onSessionStartEvent(event: SessionStartEvent) {
